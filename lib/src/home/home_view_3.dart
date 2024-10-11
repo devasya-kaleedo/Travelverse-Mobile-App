@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/common/drawer.dart';
 
 class HomeView3 extends StatelessWidget {
   HomeView3({super.key});
@@ -15,6 +16,7 @@ class HomeView3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      drawer: CustomDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -25,10 +27,17 @@ class HomeView3 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    'assets/images/Hamburger.png',
-                    width: 25,
-                  ),
+                  Builder(builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: Image.asset(
+                        'assets/images/Hamburger.png',
+                        width: 25,
+                      ),
+                    );
+                  }),
                   GestureDetector(
                     onTap: () {
                       context.read<AuthProvider>().logout();
@@ -263,6 +272,7 @@ class Banner extends StatelessWidget {
                     'Explore the World',
                     textAlign: TextAlign.left,
                     style: TextStyle(
+                        color: Colors.white,
                         fontFamily: 'Poppins',
                         fontSize: 27,
                         fontWeight: FontWeight.w600),
@@ -272,7 +282,14 @@ class Banner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(left: 23),
             margin: EdgeInsets.only(top: 7),
-            child: Align(alignment: Alignment.centerLeft, child: Text('with')),
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('with',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500))),
           ),
           Container(
             padding: const EdgeInsets.only(left: 23),

@@ -102,7 +102,7 @@ class ItineraryDetail extends StatelessWidget {
                           topRight: Radius.circular(30))),
                   child: Center(
                     child: FutureBuilder(
-                        future: Future.delayed(Duration(seconds: 3)),
+                        future: Future.delayed(Duration(seconds: 2)),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -221,6 +221,7 @@ class ItineraryItem extends StatelessWidget {
               child: Image(
             image: icon,
             width: 17,
+            fit: BoxFit.contain,
           )),
         ),
         SizedBox(
