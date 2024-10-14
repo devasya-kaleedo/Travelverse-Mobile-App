@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     final currHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         height: MediaQuery.sizeOf(context).height,
         child: Column(children: [
@@ -43,12 +44,20 @@ class LoginView extends StatelessWidget {
                 Positioned(
                   top: -115,
                   left: 66,
-                  child: Image.asset('assets/images/ManWithLuggage.png'),
+                  child: Image.asset(
+                    'assets/images/ManWithLuggage.png',
+                    width: 53,
+                    fit: BoxFit.contain,
+                  ),
                 ),
                 Positioned(
                   top: -180,
                   right: -20,
-                  child: Image.asset('assets/images/FlightAeroplane.png'),
+                  child: Image.asset(
+                    'assets/images/FlightAeroplane.png',
+                    width: 200,
+                    fit: BoxFit.contain,
+                  ),
                 )
               ],
             ),

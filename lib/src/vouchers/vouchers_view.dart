@@ -1,11 +1,43 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'dart:convert';
 import 'dart:io';
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
 import 'package:travelverse_mobile_app/src/login/login_form.dart';
+
+Future<ItineraryApp?> fetchItinerary(userId, apiToken) async {
+  try {
+    Map<String, dynamic> queryParams = <String, dynamic>{};
+
+    queryParams['filters[user][id][\$eq]'] = userId.toString();
+    Response response = await get(
+        Uri.https('dev.strapi.travelverse.in', 'api/itenary-managements',
+            queryParams),
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $apiToken'});
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body.toString());
+      if (data['data'].length > 0) {
+        ItineraryApp itineraryApp =
+            ItineraryApp.fromStrapiResponse(data['data'][0]);
+        return itineraryApp;
+      } else {
+        return null;
+      }
+      // .map((quote) => QuoteApp.fromStrapiResponse(quote))
+      // .toList();
+    }
+  } catch (e) {
+    print(e.toString());
+    throw e;
+  }
+}
 
 class VouchersView extends StatelessWidget {
   VouchersView({super.key});
@@ -32,7 +64,11 @@ class VouchersView extends StatelessWidget {
                         Navigator.pop(
                             context); // Go back to the previous screen
                       },
-                      child: Image.asset('assets/images/BackIconVisa.png'))
+                      child: Image.asset(
+                        'assets/images/BackIconVisa.png',
+                        width: 24,
+                        fit: BoxFit.contain,
+                      ))
                 ],
               ),
             ),
@@ -56,13 +92,28 @@ class VouchersView extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20))),
                   child: Center(
-                    child: MainContent(),
+                    child: FutureBuilder(
+                        future: fetchItinerary(
+                            context.read<AuthProvider>().userInfo.id,
+                            context.read<AuthProvider>().userInfo.apiToken),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return CircularProgressIndicator();
+                          else {
+                            ItineraryApp? itineraryApp = snapshot.data;
+                            return MainContent(
+                              items: itineraryApp?.discounts_complimentaries,
+                            );
+                          }
+                        }),
                   ),
                 ),
                 Positioned(
                   top: -245,
                   left: 113,
-                  child: Image.asset('assets/images/Gift.png'),
+                  child: Image.asset('assets/images/Gift.png',
+                      width: 163, fit: BoxFit.contain),
                 )
               ],
             ),
@@ -77,12 +128,17 @@ class VouchersView extends StatelessWidget {
 }
 
 class MainContent extends StatelessWidget {
-  const MainContent({
-    super.key,
-  });
+  const MainContent({super.key, this.items});
+
+  final String? items;
 
   @override
   Widget build(BuildContext context) {
+    List<String> itemList = List.empty();
+
+    if (items != null) {
+      itemList = items!.split('\n');
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -97,30 +153,11 @@ class MainContent extends StatelessWidget {
         SizedBox(
           height: 12,
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Text(
-                'Complimentary Sightseeing in Italy for 2 people.',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w300),
-              ),
-            ),
-            Flexible(
-              flex: 2,
-              child: Image.asset(
-                'assets/images/Sparkle.png',
-                width: 52,
-              ),
-            )
-          ],
-        ),
+        ...List.generate(
+            itemList.length,
+            (index) => ItemView(
+                  title: itemList[index],
+                )),
         SizedBox(
           height: 80,
         ),
@@ -141,6 +178,41 @@ class MainContent extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               )),
+        )
+      ],
+    );
+  }
+}
+
+class ItemView extends StatelessWidget {
+  const ItemView({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 3,
+          child: Text(
+            title,
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w300),
+          ),
+        ),
+        Flexible(
+          flex: 2,
+          child: Image.asset(
+            'assets/images/Sparkle.png',
+            width: 52,
+            fit: BoxFit.contain,
+          ),
         )
       ],
     );

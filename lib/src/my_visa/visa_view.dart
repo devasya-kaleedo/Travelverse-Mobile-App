@@ -165,7 +165,7 @@ class VisaView extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator();
+                          return Center(child: CircularProgressIndicator());
                         } else {
                           if (snapshot.data != null) {
                             VisaApp visaApp = snapshot.data!;

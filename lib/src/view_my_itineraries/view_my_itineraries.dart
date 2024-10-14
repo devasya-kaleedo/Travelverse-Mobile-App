@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/common/drawer.dart';
 import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -46,6 +47,7 @@ class ViewMyItineraries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
@@ -57,10 +59,17 @@ class ViewMyItineraries extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    'assets/images/Hamburger.png',
-                    width: 25,
-                  ),
+                  Builder(builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: Image.asset(
+                        'assets/images/Hamburger.png',
+                        width: 25,
+                      ),
+                    );
+                  }),
                   Wrap(
                     direction: Axis.vertical,
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -198,7 +207,10 @@ class ViewMyItineraries extends StatelessWidget {
             child: Text(
           'Chat with us',
           style: TextStyle(
-              fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600),
+              color: Colors.white,
+              fontFamily: 'Poppins',
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
         )),
       ),
     );
@@ -277,7 +289,10 @@ class TripStatusCard extends StatelessWidget {
       child: Text(
         'You are on Trip',
         style: TextStyle(
-            fontFamily: 'Poppins', fontSize: 31, fontWeight: FontWeight.w600),
+            color: Colors.white,
+            fontFamily: 'Poppins',
+            fontSize: 31,
+            fontWeight: FontWeight.w600),
         textAlign: TextAlign.right,
       ),
     );

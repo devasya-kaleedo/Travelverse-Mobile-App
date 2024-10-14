@@ -1,10 +1,16 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
 import 'dart:io';
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
+import 'package:intl/intl.dart';
 
 class ItineraryDetail extends StatelessWidget {
   ItineraryDetail({super.key});
@@ -44,6 +50,35 @@ class ItineraryDetail extends StatelessWidget {
         actionLabel: '',
         details: []),
   ];
+
+  Future<ItineraryApp?> fetchItinerary(userId, apiToken) async {
+    try {
+      Map<String, dynamic> queryParams = <String, dynamic>{};
+
+      queryParams['filters[user][id][\$eq]'] = userId.toString();
+      queryParams['populate[itinerary_days][populate][day_items]'] = '*';
+      Response response = await get(
+          Uri.https('dev.strapi.travelverse.in', 'api/itenary-managements',
+              queryParams),
+          headers: {HttpHeaders.authorizationHeader: 'Bearer $apiToken'});
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body.toString());
+        if (data['data'].length > 0) {
+          ItineraryApp visaApp =
+              ItineraryApp.fromStrapiResponse(data['data'][0]);
+          return visaApp;
+        } else {
+          return null;
+        }
+        // .map((quote) => QuoteApp.fromStrapiResponse(quote))
+        // .toList();
+      }
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currHeight = MediaQuery.of(context).size.height;
@@ -51,74 +86,85 @@ class ItineraryDetail extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF03C3DF),
       body: SingleChildScrollView(
-        child: Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                child: Wrap(
-                  direction: Axis.vertical,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 47, left: 38),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                          size: 24,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(
-                              context); // Go back to the previous screen
-                        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              child: Wrap(
+                direction: Axis.vertical,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 47, left: 38),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.black,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(
+                            context); // Go back to the previous screen
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 38, bottom: 24, top: 27),
+                    constraints: BoxConstraints(minWidth: 100, maxWidth: 155),
+                    //decoration: BoxDecoration(color: Colors.red),
+                    child: Align(
+                      alignment: Alignment(-1, 0),
+                      child: Text(
+                        'Your Itinerary for Next Trip!',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 38, bottom: 24, top: 27),
-                      constraints: BoxConstraints(minWidth: 100, maxWidth: 155),
-                      //decoration: BoxDecoration(color: Colors.red),
-                      child: Align(
-                        alignment: Alignment(-1, 0),
-                        child: Text(
-                          'Your Itinerary for Next Trip!',
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30))),
-                  child: Center(
-                    child: FutureBuilder(
-                        future: Future.delayed(Duration(seconds: 2)),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator(
-                              color: Colors.cyan,
-                            );
-                          }
-                          return Column(
-                            children: [
-                              ItineraryDay(itineraryDetails: itineraryDetails)
-                            ],
+            ),
+            Container(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30))),
+                child: Center(
+                  child: FutureBuilder(
+                      future: fetchItinerary(
+                          context.read<AuthProvider>().userInfo.id,
+                          context.read<AuthProvider>().userInfo.apiToken),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator(
+                            color: Colors.cyan,
                           );
-                        }),
-                  ))
-            ],
-          ),
+                        }
+                        if (snapshot.data != null) {
+                          return Column(
+                              children: List.generate(
+                                  snapshot.data!.itineraryDays!.length,
+                                  (index) => ItineraryDay(
+                                        itineraryDetails: itineraryDetails,
+                                        dayData: snapshot
+                                            .data!.itineraryDays![index],
+                                        index: index + 1,
+                                      ))
+                              // children: [
+                              //   ItineraryDay(itineraryDetails: itineraryDetails)
+                              // ],
+                              );
+                        }
+                        return Text('no data');
+                      }),
+                ))
+          ],
         ),
       ),
     );
@@ -126,13 +172,15 @@ class ItineraryDetail extends StatelessWidget {
 }
 
 class ItineraryDay extends StatelessWidget {
-  const ItineraryDay({
-    super.key,
-    required this.itineraryDetails,
-  });
+  const ItineraryDay(
+      {super.key,
+      required this.itineraryDetails,
+      required this.dayData,
+      required this.index});
 
   final List<ItineraryItemModel>? itineraryDetails;
-
+  final Map<String, dynamic> dayData;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -144,7 +192,8 @@ class ItineraryDay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Thursday, 13 June',
+                  DateFormat('EEEE, d MMMM')
+                      .format(DateTime.parse(dayData['date'])),
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       color: Colors.black,
@@ -152,7 +201,7 @@ class ItineraryDay extends StatelessWidget {
                       fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  'Day 1',
+                  'Day ${index}',
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       color: Color(0xFF6f6f6f),
@@ -163,7 +212,7 @@ class ItineraryDay extends StatelessWidget {
             ),
           ),
           ...List.generate(
-              itineraryDetails!.length,
+              dayData['day_items']!.length,
               (index) => Container(
                     padding: EdgeInsets.symmetric(vertical: 12),
                     child: ItineraryItem(
@@ -172,6 +221,7 @@ class ItineraryDay extends StatelessWidget {
                       time: itineraryDetails![index].time!,
                       actionLabel: itineraryDetails![index].actionLabel!,
                       details: itineraryDetails![index].details!,
+                      dayItem: dayData['day_items'][index],
                     ),
                   ))
         ]);
@@ -201,124 +251,45 @@ class ItineraryItem extends StatelessWidget {
       this.title = 'title',
       required this.icon,
       this.actionLabel = '',
-      this.details});
+      this.details,
+      required this.dayItem});
 
   final String title;
   final String time;
   final ImageProvider icon;
   final String actionLabel;
   final List<String>? details;
+  final Map<String, dynamic> dayItem;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(9),
-          decoration: BoxDecoration(
-              shape: BoxShape.circle, border: Border.all(color: Colors.black)),
-          child: Center(
-              child: Image(
+    return ExpansionTile(
+      shape: const Border(),
+      tilePadding: EdgeInsets.zero,
+      leading: DecoratedBox(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, border: Border.all(color: Colors.black)),
+        child: Padding(
+          padding: const EdgeInsets.all(9.0),
+          child: Image(
             image: icon,
             width: 17,
             fit: BoxFit.contain,
-          )),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                direction: Axis.vertical,
-                children: [
-                  Text(title,
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black)),
-                  Text(time,
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF6f6f6f))),
-                  if (actionLabel != '')
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(right: 70, left: 12),
-                                backgroundColor: Color(0xFF03C3DF),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              alignment: WrapAlignment.start,
-                              runAlignment: WrapAlignment.start,
-                              spacing: 11.5,
-                              children: [
-                                Align(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
-                                        border:
-                                            Border.all(color: Colors.black)),
-                                    child: Center(
-                                        child: Image.asset(
-                                      'assets/images/CompassIcon.png',
-                                      width: 17,
-                                    )),
-                                  ),
-                                ),
-                                Text(actionLabel,
-                                    style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white))
-                              ],
-                            ))
-                      ],
-                    ),
-                  if (details != null && details!.isNotEmpty)
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 12,
-                          ),
-                          ...details!
-                              .map((item) => Text(item,
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF6f6f6f))))
-                              .toList()
-                        ])
-                ],
-              ),
-              SizedBox(height: 14.5),
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Divider(
-                    thickness: 1, color: Color(0xFF707070).withOpacity(0.21)),
-              )
-            ],
           ),
-        )
-      ],
+        ),
+      ),
+      title: Text(dayItem['title'],
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black)),
+      subtitle: Text(time,
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF6f6f6f))),
+      children: [ItineraryApp.getDayItemChildren(dayItem)],
     );
   }
 }

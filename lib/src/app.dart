@@ -9,6 +9,7 @@ import 'package:travelverse_mobile_app/src/home/home_view.dart';
 import 'package:travelverse_mobile_app/src/home/home_view_2.dart';
 import 'package:travelverse_mobile_app/src/home/home_view_3.dart';
 import 'package:travelverse_mobile_app/src/home/home_view_gpt.dart';
+import 'package:travelverse_mobile_app/src/inclusions_exclusions/inclusions_exclusions.dart';
 import 'package:travelverse_mobile_app/src/itinerary_detail/itinerary_detail_view.dart';
 import 'package:travelverse_mobile_app/src/login/login_view.dart';
 import 'package:travelverse_mobile_app/src/my_quotes/my_quotes_2.dart';
@@ -97,27 +98,36 @@ class MyApp extends StatelessWidget {
             // Define a function to handle named routes in order to support
             // Flutter web url navigation and deep linking.
             builder: (context, child) {
-              return Overlay(
-                initialEntries: [
-                  OverlayEntry(
-                    builder: (context) => Consumer<AuthProvider>(
-                        builder: (context, authState, _) {
-                      return authState.isAuthorized
-                          ? child!
-                          : FutureBuilder(
-                              future: authState.tryLogin(),
-                              builder: (context, snapshot) =>
-                                  snapshot.connectionState ==
-                                          ConnectionState.waiting
-                                      ? CircularProgressIndicator()
-                                      : authState.isAuthorized
-                                          ? child!
-                                          : LoginView(),
-                            );
-                    }),
-                  ),
-                ],
-              );
+              return Consumer<AuthProvider>(builder: (context, authState, _) {
+                return authState.isAuthorized
+                    ? Overlay(
+                        initialEntries: [
+                          OverlayEntry(
+                            builder: (context) => child!,
+                          )
+                        ],
+                      )
+                    : FutureBuilder(
+                        future: authState.tryLogin(),
+                        builder: (context, snapshot) =>
+                            snapshot.connectionState == ConnectionState.waiting
+                                ? CircularProgressIndicator()
+                                : authState.isAuthorized
+                                    ? Overlay(
+                                        initialEntries: [
+                                          OverlayEntry(
+                                            builder: (context) => child!,
+                                          )
+                                        ],
+                                      )
+                                    : Overlay(initialEntries: [
+                                        OverlayEntry(
+                                          builder: (context) =>
+                                              const LoginView(),
+                                        )
+                                      ]),
+                      );
+              });
             },
             onGenerateRoute: (RouteSettings routeSettings) {
               return MaterialPageRoute<void>(
@@ -138,6 +148,8 @@ class MyApp extends StatelessWidget {
                       return FeedbackView();
                     case '/vouchers':
                       return VouchersView();
+                    case '/inclusions_exclusions':
+                      return InclusionsExclusionsView();
                     case '/home':
                       return HomeView3();
                     default:

@@ -11,8 +11,6 @@ class FeedbackView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currHeight = MediaQuery.of(context).size.height;
-    final currWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -35,7 +33,11 @@ class FeedbackView extends StatelessWidget {
                   Positioned(
                       bottom: -4,
                       left: 53,
-                      child: Image.asset('assets/images/DownArrowBlue.png'))
+                      child: Image.asset(
+                        'assets/images/DownArrowBlue.png',
+                        width: 63,
+                        fit: BoxFit.contain,
+                      ))
                 ],
               ),
             ),
@@ -107,15 +109,11 @@ class SentimentIndicator extends StatelessWidget {
         Image.asset(
           'assets/images/Happy.png',
           width: 43,
+          fit: BoxFit.contain,
         ),
-        Image.asset(
-          'assets/images/Neutral.png',
-          width: 43,
-        ),
-        Image.asset(
-          'assets/images/Sad.png',
-          width: 43,
-        )
+        Image.asset('assets/images/Neutral.png',
+            width: 43, fit: BoxFit.contain),
+        Image.asset('assets/images/Sad.png', width: 43, fit: BoxFit.contain)
       ],
     );
   }
@@ -147,6 +145,7 @@ class HeadingCard extends StatelessWidget {
               child: Image.asset(
                 'assets/images/FeedbackIcon.png',
                 width: 63,
+                fit: BoxFit.contain,
               ),
             ),
           ),

@@ -157,7 +157,10 @@ class HomeView3 extends StatelessWidget {
             child: Text(
           'Chat with us',
           style: TextStyle(
-              fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600),
+              color: Colors.white,
+              fontFamily: 'Poppins',
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
         )),
       ),
     );
