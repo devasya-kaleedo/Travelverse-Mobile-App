@@ -54,53 +54,95 @@ class _MyQuotes2State extends State<MyQuotes2> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(children: [
-        Expanded(
-            flex: 9,
-            child: Header(currHeight: currHeight, currWidth: currWidth)),
-        Expanded(
-          flex: 11,
-          child: Container(
-            //constraints: BoxConstraints.expand(),
-            decoration: BoxDecoration(color: Colors.white),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FutureBuilder(
-                    future: fetchQuotationsByUserId(
-                        context.read<AuthProvider>().userInfo.id,
-                        context.read<AuthProvider>().userInfo.apiToken),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(
-                          color: Colors.cyan,
-                        );
-                      } else {
-                        List<QuoteApp> quotationsList = snapshot.data;
-                        //var quotationsCardList = quotationsList.map((quotation)=>QuoteCard()).toList();
-                        return Expanded(
-                          child: ListView.separated(
-                              separatorBuilder: (context, index) => SizedBox(
-                                    height: 14,
-                                  ),
-                              itemCount: quotationsList.length,
-                              itemBuilder: (context, index) => QuoteCard(
-                                  title: 'Quote ${index + 1}',
-                                  country: quotationsList[index].country,
-                                  dateString: '14th June 2024',
-                                  quoteApp: quotationsList[index])),
-                        );
-                      }
-                    }),
-              ],
-            ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Container(
+                height: 360,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    MapContainer(),
+                    Positioned(
+                      left: 38,
+                      bottom: 27,
+                      child: HeadingCard(),
+                    ),
+                    Positioned(
+                        bottom: -4,
+                        left: 53,
+                        child: Image.asset(
+                          'assets/images/DownArrowBlue.png',
+                          width: 63,
+                          fit: BoxFit.contain,
+                        )),
+                    Positioned(
+                      left: 34,
+                      top: 36,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 25,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(
+                              context); // Go back to the previous screen
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                //constraints: BoxConstraints.expand(),
+                decoration: BoxDecoration(color: Colors.white),
+                margin: EdgeInsets.only(top: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FutureBuilder(
+                        future: fetchQuotationsByUserId(
+                            context.read<AuthProvider>().userInfo.id,
+                            context.read<AuthProvider>().userInfo.apiToken),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(
+                              color: Colors.cyan,
+                            );
+                          } else {
+                            List<QuoteApp> quotationsList = snapshot.data;
+                            //var quotationsCardList = quotationsList.map((quotation)=>QuoteCard()).toList();
+                            return Column(
+                              children:
+                                  List.generate(quotationsList.length, (index) {
+                                return Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  child: QuoteCard(
+                                      title: 'Quote ${index + 1}',
+                                      country: quotationsList[index].country,
+                                      dateString: '14th June 2024',
+                                      quoteApp: quotationsList[index]),
+                                );
+                              }),
+                            );
+                          }
+                        }),
+                  ],
+                ),
+              ),
+              Container(margin: EdgeInsets.only(top: 77), child: Footer())
+            ]),
           ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Footer(),
-        )
-      ]),
+        );
+      }),
     );
   }
 }
@@ -126,13 +168,13 @@ class Header extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        height: currHeight * 0.33,
+        //height: currHeight * 0.33,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 stops: [0, 1],
                 colors: [Color(0xFF03C3DF), Colors.white],
-                begin: Alignment(0, 1),
-                end: Alignment(0, -1)),
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter),
             color: Colors.white,
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
@@ -184,6 +226,19 @@ class Header extends StatelessWidget {
                 width: 60,
               )),
         ),
+      ),
+      Align(
+        alignment: Alignment.topLeft,
+        child: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 100,
+          ),
+          onPressed: () {
+            Navigator.pop(context); // Go back to the previous screen
+          },
+        ),
       )
     ]);
   }
@@ -212,7 +267,7 @@ class Footer extends StatelessWidget {
                 fontWeight: FontWeight.w500),
           ),
           style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF989898).withOpacity(0),
+              backgroundColor: Color(0xFFE8E8E8),
               padding: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
               fixedSize: Size(98, 33),
               shape: RoundedRectangleBorder(
@@ -358,5 +413,89 @@ Future<File?> downloadFile(String url, String name) async {
     return file;
   } catch (e) {
     print(e.toString());
+  }
+}
+
+class MapContainer extends StatelessWidget {
+  const MapContainer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 294,
+      decoration: BoxDecoration(
+          color: Colors.cyan,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20))),
+      child: Center(
+        child: Image.asset(
+          'assets/images/Map.png',
+          width: 500,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class HeadingCard extends StatelessWidget {
+  const HeadingCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicWidth(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            clipBehavior: Clip.none,
+            padding: EdgeInsets.only(left: 24, top: 36, bottom: 23),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset(
+                'assets/images/FileIcon.png',
+                width: 90,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Container(
+            clipBehavior: Clip.none,
+            padding: EdgeInsets.only(left: 30, top: 14, bottom: 36, right: 90),
+            decoration: BoxDecoration(
+                color: Color(0xFFEAFAFC),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20))),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 100,
+                child: Text(
+                  'My Quotes',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Poppins',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

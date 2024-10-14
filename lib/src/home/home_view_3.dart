@@ -24,7 +24,7 @@ class HomeView3 extends StatelessWidget {
               margin: EdgeInsets.only(top: 40),
               padding: EdgeInsets.symmetric(horizontal: 34),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Builder(builder: (context) {
@@ -93,7 +93,7 @@ class HomeView3 extends StatelessWidget {
                       lightTitle: 'My ',
                       boldTitle: 'Quotes',
                       description:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                          'Instantly access all your travel quotes in one place, making it easy to stay organised and prepared for your next adventure.',
                       navLink: '/my_quotes',
                     ),
                     NavDivider(),
@@ -101,14 +101,14 @@ class HomeView3 extends StatelessWidget {
                         lightTitle: 'Track ',
                         boldTitle: 'My Visa',
                         description:
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                            'Easily track the status of your visa application with real-time updates, and download it effortlessly so you can plan your travel ahead.',
                         navLink: '/my_visa'),
                     NavDivider(),
                     NavItem(
                         lightTitle: 'View ',
                         boldTitle: 'My Itinerary',
                         description:
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                            'Access your day- wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings and vouchers, all in one place.',
                         navLink: '/view_my_itineraries')
                   ],
                 ),
@@ -297,7 +297,7 @@ class Banner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(left: 23),
             child: Image.asset(
-              'assets/images/BaseTextLogo.png',
+              'assets/images/WhiteTextLogo.png',
               width: 116,
             ),
           )
@@ -356,13 +356,13 @@ class NavItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 6,
                   child: Text(description,
                       style: TextStyle(
                           color: Color(0xFF9D9D9D),
-                          fontSize: 12,
+                          fontSize: 10,
                           fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600)),
+                          fontWeight: FontWeight.w500)),
                 ),
                 Flexible(
                   child: Image.asset(

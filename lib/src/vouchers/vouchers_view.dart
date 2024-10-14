@@ -55,7 +55,7 @@ class VouchersView extends StatelessWidget {
             Container(
               color: Colors.white,
               height: currHeight * 0.11,
-              padding: EdgeInsets.symmetric(horizontal: 38),
+              padding: EdgeInsets.only(top: 35, left: 38),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -114,7 +114,16 @@ class VouchersView extends StatelessWidget {
                   left: 113,
                   child: Image.asset('assets/images/Gift.png',
                       width: 163, fit: BoxFit.contain),
-                )
+                ),
+                Positioned(
+                  right: 40,
+                  top: 50,
+                  child: Image.asset(
+                    'assets/images/Sparkle.png',
+                    width: 52,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ],
             ),
             SizedBox(
@@ -143,7 +152,7 @@ class MainContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Gift',
+          'From us, to you',
           style: TextStyle(
               color: Colors.black,
               fontSize: 18,
@@ -206,14 +215,14 @@ class ItemView extends StatelessWidget {
                 fontWeight: FontWeight.w300),
           ),
         ),
-        Flexible(
-          flex: 2,
-          child: Image.asset(
-            'assets/images/Sparkle.png',
-            width: 52,
-            fit: BoxFit.contain,
-          ),
-        )
+        // Flexible(
+        //   flex: 2,
+        //   child: Image.asset(
+        //     'assets/images/Sparkle.png',
+        //     width: 52,
+        //     fit: BoxFit.contain,
+        //   ),
+        // )
       ],
     );
   }

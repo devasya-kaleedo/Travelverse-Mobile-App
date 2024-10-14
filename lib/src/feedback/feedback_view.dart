@@ -37,7 +37,22 @@ class FeedbackView extends StatelessWidget {
                         'assets/images/DownArrowBlue.png',
                         width: 63,
                         fit: BoxFit.contain,
-                      ))
+                      )),
+                  Positioned(
+                    left: 34,
+                    top: 36,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.black,
+                        size: 25,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(
+                            context); // Go back to the previous screen
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
@@ -195,6 +210,7 @@ class MapContainer extends StatelessWidget {
       child: Center(
         child: Image.asset(
           'assets/images/Map.png',
+          width: 500,
           fit: BoxFit.cover,
         ),
       ),

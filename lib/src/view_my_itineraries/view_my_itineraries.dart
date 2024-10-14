@@ -143,7 +143,7 @@ class ViewMyItineraries extends StatelessWidget {
                       lightTitle: 'My ',
                       boldTitle: 'Vouchers',
                       description:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                          'Access and Download all your booking vouchers in one place. Even if you’re offline, you can view or download them at your convenience.',
                       navLink: '/vouchers',
                     ),
                     NavDivider(),
@@ -151,14 +151,14 @@ class ViewMyItineraries extends StatelessWidget {
                         lightTitle: 'My ',
                         boldTitle: 'Itinerary',
                         description:
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                            'View your day- wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings  and vouchers, all in one place.',
                         navLink: '/itinerary_detail'),
                     NavDivider(),
                     NavItem(
                         lightTitle: 'Inclusions ',
                         boldTitle: '& Exclusions',
                         description:
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                            'See what’s included and what’s not in your itinerary, so you can enjoy your trip without any surprises.',
                         navLink: '/inclusions_exclusions')
                   ],
                 ),
@@ -408,11 +408,11 @@ class NavItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 6,
                   child: Text(description,
                       style: TextStyle(
                           color: Color(0xFF9D9D9D),
-                          fontSize: 12,
+                          fontSize: 10,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600)),
                 ),

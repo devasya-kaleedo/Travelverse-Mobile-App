@@ -121,11 +121,12 @@ class ItineraryApp {
               ),
               ActionButton(
                   title: 'Download', iconAsset: 'assets/images/PDFIcon.png'),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    'MEALS: ${dayItem['meals']!} ${dayItem['mealsPreference']!}'),
-              ),
+              if (dayItem['meals'] != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      'MEALS: ${dayItem['meals']!} ${dayItem['mealsPreference']!}'),
+                ),
             ],
           ),
         );

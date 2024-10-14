@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
 import 'package:travelverse_mobile_app/src/auth/user_model.dart';
+import 'package:travelverse_mobile_app/src/utils/toasts.dart';
 
 // Define a custom Form widget.
 class LoginForm extends StatefulWidget {
@@ -17,7 +18,7 @@ class LoginForm extends StatefulWidget {
   }
 }
 
-Future<UserApp?> login(String email, password) async {
+Future<dynamic> login(String email, password) async {
   try {
     Response response = await post(
         Uri.parse('https://dev.strapi.travelverse.in/api/auth/local'),
@@ -34,6 +35,7 @@ Future<UserApp?> login(String email, password) async {
       return userapp;
     } else {
       print('failed');
+      return jsonDecode(response.body.toString());
     }
   } catch (e) {
     print(e.toString());
@@ -92,6 +94,8 @@ class LoginFormState extends State<LoginForm> {
                       fontSize: 16,
                       height: 1),
                   decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.cyan)),
                       border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 4, horizontal: 4)),
@@ -119,25 +123,7 @@ class LoginFormState extends State<LoginForm> {
                       fontWeight: FontWeight.w600)),
               SizedBox(
                 height: 40,
-                child: TextFormField(
-                  // The validator receives the text that the user has entered.
-                  controller: passwordController,
-                  style: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.black,
-                      fontSize: 16,
-                      height: 1),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 4)),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
+                child: PasswordField(),
               )
             ],
           ),
@@ -169,6 +155,59 @@ class LoginFormState extends State<LoginForm> {
   }
 }
 
+class PasswordField extends StatefulWidget {
+  const PasswordField({
+    super.key,
+  });
+
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _passwordVisible = false;
+
+  @override
+  void initState() {
+    _passwordVisible = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      // The validator receives the text that the user has entered.
+      controller: passwordController,
+      obscureText: !_passwordVisible,
+      style: TextStyle(
+          fontFamily: 'Poppins', color: Colors.black, fontSize: 16, height: 1),
+      decoration: InputDecoration(
+          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.cyan,
+            ),
+            onPressed: () {
+              // Update the state i.e. toogle the state of passwordVisible variable
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            },
+          ),
+          focusedBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: Colors.cyan)),
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 4)),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+}
+
 class LoginButton extends StatelessWidget {
   const LoginButton({
     super.key,
@@ -178,11 +217,13 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: () async {
-          UserApp? userapp = await login(usernameController.text.toString(),
+          var userapp = await login(usernameController.text.toString(),
               passwordController.text.toString());
-          if (userapp != null) {
+          if (userapp is UserApp) {
             // ignore: use_build_context_synchronously
             context.read<AuthProvider>().setUser(userapp);
+          } else {
+            toastError('Incorrect Credentials');
           }
         },
         style: ElevatedButton.styleFrom(

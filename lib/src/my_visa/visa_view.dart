@@ -55,130 +55,70 @@ class VisaView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 219,
+                Container(
+                  height: 360,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
                   child: Stack(
-                    alignment: Alignment.bottomLeft,
-                    clipBehavior: Clip.none,
+                    alignment: Alignment.topLeft,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                            child: Column(
-                          children: [
-                            Expanded(
-                                flex: 7,
-                                child: Container(
-                                  child: Center(
-                                      child: Image.asset(
-                                    'assets/images/Map.png',
-                                    fit: BoxFit.fill,
-                                  )),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFF03C3DF),
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20))),
-                                )),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  color: Colors.white,
-                                ))
-                          ],
-                        )),
-                      ),
+                      MapContainer(),
                       Positioned(
                         left: 38,
-                        bottom: 70,
-                        child: IntrinsicWidth(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                clipBehavior: Clip.none,
-                                padding: EdgeInsets.only(
-                                    left: 30, top: 43, bottom: 23),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20))),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Image.asset(
-                                    'assets/images/VisaIcon.png',
-                                    width: 63,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                clipBehavior: Clip.none,
-                                padding: EdgeInsets.only(
-                                    left: 30, top: 14, bottom: 36, right: 107),
-                                decoration: BoxDecoration(
-                                    color: Colors.lightBlue[50],
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(20),
-                                        bottomRight: Radius.circular(20))),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: SizedBox(
-                                    width: 100,
-                                    child: Text(
-                                      'Your Visa Status',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: 'Poppins',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                        bottom: 27,
+                        child: HeadingCard(),
                       ),
                       Positioned(
-                          bottom: 32,
+                          bottom: -4,
                           left: 53,
                           child: Image.asset(
                             'assets/images/DownArrowBlue.png',
+                            width: 63,
                             fit: BoxFit.contain,
-                            width: 72,
-                          ))
+                          )),
+                      Positioned(
+                        left: 34,
+                        top: 36,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(
+                                context); // Go back to the previous screen
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 32,
+                ),
                 Expanded(
-                    flex: 281,
                     child: FutureBuilder(
-                      future: fetchVisaApplication(
-                          context.read<AuthProvider>().userInfo.email,
-                          context.read<AuthProvider>().userInfo.apiToken),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else {
-                          if (snapshot.data != null) {
-                            VisaApp visaApp = snapshot.data!;
-                            return VisaInfoCard(
-                              visaApp: visaApp,
-                            );
-                          } else {
-                            return Text(
-                                'You do not have any active visa applications');
-                          }
-                        }
-                      },
-                    ))
+                  future: fetchVisaApplication(
+                      context.read<AuthProvider>().userInfo.email,
+                      context.read<AuthProvider>().userInfo.apiToken),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      if (snapshot.data != null) {
+                        VisaApp visaApp = snapshot.data!;
+                        return VisaInfoCard(
+                          visaApp: visaApp,
+                        );
+                      } else {
+                        return Text(
+                            'You do not have any active visa applications');
+                      }
+                    }
+                  },
+                ))
               ]),
         ),
       ),
@@ -197,145 +137,114 @@ class VisaInfoCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 44),
       decoration: BoxDecoration(
           color: Colors.white24, borderRadius: BorderRadius.circular(20)),
-      child: Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            decoration: BoxDecoration(
-                color: Color(0xFFE3F6F9),
-                borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 24, top: 22, bottom: 27),
-                  decoration: BoxDecoration(
-                      color: Color(0xFF03C3DF),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Wrap(
-                          direction: Axis.vertical,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFFE3F6F9),
+                    borderRadius: BorderRadius.circular(20)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 24, top: 22, bottom: 27),
+                      decoration: BoxDecoration(
+                          color: Color(0xFF03C3DF),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Reference No.',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Poppins',
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
+                            Wrap(
+                              direction: Axis.vertical,
+                              children: [
+                                Text(
+                                  'Reference No.',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  visaApp.visaReference!,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
                             ),
-                            Text(
-                              visaApp.visaReference!,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
+                            Container(
+                              margin: EdgeInsets.only(top: 16.5),
+                              child: Wrap(direction: Axis.vertical, children: [
+                                Text(
+                                  'Date Applied',
+                                  style: TextStyle(
+                                      color: Color(0xFF177689),
+                                      fontFamily: 'Poppins',
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  visaApp.applicationDate ?? '',
+                                  style: TextStyle(
+                                      color: Color(0xFF177689),
+                                      fontFamily: 'Poppins',
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ]),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 8.5),
+                              child: Wrap(direction: Axis.vertical, children: [
+                                Text(
+                                  'Estimated Date of Decision',
+                                  style: TextStyle(
+                                      color: Color(0xFF177689),
+                                      fontFamily: 'Poppins',
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  visaApp.expectedDate ?? '',
+                                  style: TextStyle(
+                                      color: Color(0xFF177689),
+                                      fontFamily: 'Poppins',
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ]),
                             )
                           ],
                         ),
-                        Container(
-                          margin: EdgeInsets.only(top: 16.5),
-                          child: Wrap(direction: Axis.vertical, children: [
-                            Text(
-                              'Date Applied',
-                              style: TextStyle(
-                                  color: Color(0xFF177689),
-                                  fontFamily: 'Poppins',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              visaApp.applicationDate ?? '',
-                              style: TextStyle(
-                                  color: Color(0xFF177689),
-                                  fontFamily: 'Poppins',
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ]),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 8.5),
-                          child: Wrap(direction: Axis.vertical, children: [
-                            Text(
-                              'Estimated Date of Decision',
-                              style: TextStyle(
-                                  color: Color(0xFF177689),
-                                  fontFamily: 'Poppins',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              visaApp.expectedDate ?? '',
-                              style: TextStyle(
-                                  color: Color(0xFF177689),
-                                  fontFamily: 'Poppins',
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ]),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 24, top: 22, bottom: 22),
-                  decoration: BoxDecoration(
-                      color: Color(0xFFCBEEF4),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Wrap(
-                      direction: Axis.vertical,
-                      children: [
-                        Text(
-                          'Pax Applied For',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'Poppins',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(visaApp.pax!.toString(),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Poppins',
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500))
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      EdgeInsets.only(left: 24, top: 22, bottom: 22, right: 24),
-                  decoration: BoxDecoration(
-                      color: Color(0xFFE3F6F9),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Wrap(
+                    Container(
+                      padding: EdgeInsets.only(left: 24, top: 22, bottom: 22),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFCBEEF4),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
                           direction: Axis.vertical,
                           children: [
                             Text(
-                              'Status',
+                              'Pax Applied For',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontFamily: 'Poppins',
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500),
                             ),
-                            Text(visaApp.status!,
+                            Text(visaApp.pax!.toString(),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: 'Poppins',
@@ -343,20 +252,84 @@ class VisaInfoCard extends StatelessWidget {
                                     fontWeight: FontWeight.w500))
                           ],
                         ),
-                        SizedBox(
-                          width: 23.5,
-                          child: Image.asset(
-                            getVisaStatusAsset(visaApp.status!),
-                            fit: BoxFit.contain,
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-          )),
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 24, top: 22, bottom: 22, right: 24),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFE3F6F9),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20))),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Wrap(
+                              direction: Axis.vertical,
+                              children: [
+                                Text(
+                                  'Status',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Text(visaApp.status!,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: 'Poppins',
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500))
+                              ],
+                            ),
+                            SizedBox(
+                              width: 23.5,
+                              child: Image.asset(
+                                getVisaStatusAsset(visaApp.status!),
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          if (visaApp.status! == 'Completed')
+            Container(
+              margin: EdgeInsets.only(top: 38),
+              color: Colors.white,
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/DownArrowBlue.png',
+                        width: 16,
+                        fit: BoxFit.contain,
+                      ),
+                      Text(
+                        'Download Now',
+                        style: TextStyle(
+                            color: Colors.cyan,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.cyan,
+                            decorationThickness: 4,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 10),
+                      ),
+                    ],
+                  )),
+            )
+        ],
+      ),
     );
   }
 
@@ -371,5 +344,93 @@ class VisaInfoCard extends StatelessWidget {
         return 'assets/images/Rejected.png';
     }
     return '';
+  }
+}
+
+class MapContainer extends StatelessWidget {
+  const MapContainer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 294,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.cyan, Colors.white],
+              stops: [0, 0.95],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20))),
+      child: Center(
+        child: Image.asset(
+          'assets/images/Map.png',
+          width: 500,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class HeadingCard extends StatelessWidget {
+  const HeadingCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicWidth(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            clipBehavior: Clip.none,
+            padding: EdgeInsets.only(left: 24, top: 42, bottom: 23),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset(
+                'assets/images/VisaIcon.png',
+                width: 63,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Container(
+            clipBehavior: Clip.none,
+            padding: EdgeInsets.only(left: 30, top: 14, bottom: 36, right: 90),
+            decoration: BoxDecoration(
+                color: Color(0xFFEAFAFC),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20))),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 100,
+                child: Text(
+                  'Your Visa Status',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Poppins',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
