@@ -46,189 +46,236 @@ class ViewMyItineraries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: CustomDrawer(),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 40),
-              padding: EdgeInsets.symmetric(horizontal: 34),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+        drawer: CustomDrawer(),
+        backgroundColor: Colors.white,
+        body: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Builder(builder: (context) {
-                    return GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: Image.asset(
-                        'assets/images/Hamburger.png',
-                        width: 25,
-                      ),
-                    );
-                  }),
-                  Wrap(
-                    direction: Axis.vertical,
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  Column(
                     children: [
-                      Image.asset(
-                        'assets/images/ProfileIcon.png',
-                        width: 25,
+                      ProfileHeader(),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: FutureBuilder(
+                          future: fetchItinerary(
+                              context.read<AuthProvider>().userInfo.id,
+                              context.read<AuthProvider>().userInfo.apiToken),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else {
+                              if (snapshot.data == null) {
+                                return Text(
+                                    'You do not have an active itinerary. Plan a trip with Travelverse today !');
+                              }
+                              ItineraryApp? itineraryApp = snapshot.data;
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child:
+                                        PlaceCard(itineraryApp: itineraryApp!),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: TripStatusCard(),
+                                  )
+                                ],
+                              );
+                            }
+                          },
+                        ),
                       ),
-                      Text(
-                        context.read<AuthProvider>().userInfo.first_name,
-                        style: TextStyle(color: Color(0xFF03C3DF)),
-                      )
+                      NavArea(),
                     ],
-                  )
+                  ),
+                  FooterArea()
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: FutureBuilder(
-                future: fetchItinerary(context.read<AuthProvider>().userInfo.id,
-                    context.read<AuthProvider>().userInfo.apiToken),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else {
-                    if (snapshot.data == null) {
-                      return Text(
-                          'You do not have an active itinerary. Plan a trip with Travelverse today !');
-                    }
-                    ItineraryApp? itineraryApp = snapshot.data;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: PlaceCard(itineraryApp: itineraryApp!),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: TripStatusCard(),
-                        )
-                      ],
-                    );
-                  }
-                },
+          );
+        }),
+        bottomNavigationBar: Container(
+          height: 60,
+          decoration: BoxDecoration(
+              color: Color(0xFF03C3DF),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          child: Center(
+              child: Text(
+            'Chat with us',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
+          )),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 40),
+      padding: EdgeInsets.symmetric(horizontal: 34),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Builder(builder: (context) {
+            return GestureDetector(
+              onTap: () {
+                Scaffold.of(context).openDrawer();
+              },
+              child: Image.asset(
+                'assets/images/Hamburger.png',
+                width: 25,
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              margin: EdgeInsets.only(top: 11),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.16),
-                          offset: Offset(5, 5),
-                          blurRadius: 30)
-                    ]),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    NavItem(
-                      lightTitle: 'My ',
-                      boldTitle: 'Vouchers',
-                      description:
-                          'Access and Download all your booking vouchers in one place. Even if you’re offline, you can view or download them at your convenience.',
-                      navLink: '/vouchers',
-                    ),
-                    NavDivider(),
-                    NavItem(
-                        lightTitle: 'My ',
-                        boldTitle: 'Itinerary',
-                        description:
-                            'View your day-wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings  and vouchers, all in one place.',
-                        navLink: '/itinerary_detail'),
-                    NavDivider(),
-                    NavItem(
-                        lightTitle: 'Inclusions ',
-                        boldTitle: '& Exclusions',
-                        description:
-                            'See what’s included and what’s not in your itinerary, so you can enjoy your trip without any surprises.',
-                        navLink: '/inclusions_exclusions')
-                  ],
-                ),
+            );
+          }),
+          Wrap(
+            direction: Axis.vertical,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/ProfileIcon.png',
+                width: 25,
               ),
+              Text(
+                context.read<AuthProvider>().userInfo.first_name,
+                style: TextStyle(color: Color(0xFF03C3DF)),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class NavArea extends StatelessWidget {
+  const NavArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      margin: EdgeInsets.only(top: 11),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.16),
+                  offset: Offset(5, 5),
+                  blurRadius: 30)
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NavItem(
+              lightTitle: 'My ',
+              boldTitle: 'Vouchers',
+              description:
+                  'Access and Download all your booking vouchers in one place. Even if you’re offline, you can view or download them at your convenience.',
+              navLink: '/vouchers',
             ),
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(top: 32),
-              padding: EdgeInsets.only(left: 40),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  fit: StackFit.loose,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Need Help?',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Text('We are available 24x7!',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500)),
-                        Container(
-                            margin: EdgeInsets.only(top: 24),
-                            child: CallUsButton()),
-                        SizedBox(
-                          height: 16,
-                        )
-                      ],
-                    ),
-                    Positioned(
-                      right: 0,
-                      child: Image.asset(
-                        'assets/images/DottedPlane.png',
-                        width: 135,
-                      ),
-                    )
-                  ],
+            NavDivider(),
+            NavItem(
+                lightTitle: 'My ',
+                boldTitle: 'Itinerary',
+                description:
+                    'View your day-wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings  and vouchers, all in one place.',
+                navLink: '/itinerary_detail'),
+            NavDivider(),
+            NavItem(
+                lightTitle: 'Inclusions ',
+                boldTitle: '& Exclusions',
+                description:
+                    'See what’s included and what’s not in your itinerary, so you can enjoy your trip without any surprises.',
+                navLink: '/inclusions_exclusions')
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FooterArea extends StatelessWidget {
+  const FooterArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topLeft,
+      margin: EdgeInsets.only(top: 32),
+      padding: EdgeInsets.only(left: 40),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          fit: StackFit.loose,
+          clipBehavior: Clip.none,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Need Help?',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600),
                 ),
+                Text('We are available 24x7!',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500)),
+                Container(
+                    margin: EdgeInsets.only(top: 24), child: CallUsButton()),
+                SizedBox(
+                  height: 16,
+                )
+              ],
+            ),
+            Positioned(
+              right: 0,
+              child: Image.asset(
+                'assets/images/DottedPlane.png',
+                width: 135,
               ),
             )
           ],
         ),
-      ),
-      bottomNavigationBar: Container(
-        height: 60,
-        decoration: BoxDecoration(
-            color: Color(0xFF03C3DF),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        child: Center(
-            child: Text(
-          'Chat with us',
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Poppins',
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
-        )),
       ),
     );
   }

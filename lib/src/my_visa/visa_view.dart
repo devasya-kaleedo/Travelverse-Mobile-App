@@ -46,80 +46,82 @@ class VisaView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        constraints: BoxConstraints(maxHeight: currHeight),
-        child: Center(
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  height: 360,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.topLeft,
-                    children: [
-                      MapContainer(),
-                      Positioned(
-                        left: 38,
-                        bottom: 27,
-                        child: HeadingCard(),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          left: 53,
-                          child: Image.asset(
-                            'assets/images/DownArrowBlue.png',
-                            width: 60,
-                            fit: BoxFit.contain,
-                          )),
-                      Positioned(
-                        left: 34,
-                        top: 36,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
-                            size: 25,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(
-                                context); // Go back to the previous screen
-                          },
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          constraints: BoxConstraints(maxHeight: currHeight),
+          child: Center(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 360,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Stack(
+                      alignment: Alignment.topLeft,
+                      children: [
+                        MapContainer(),
+                        Positioned(
+                          left: 38,
+                          bottom: 27,
+                          child: HeadingCard(),
                         ),
-                      )
-                    ],
+                        Positioned(
+                            bottom: 0,
+                            left: 53,
+                            child: Image.asset(
+                              'assets/images/DownArrowBlue.png',
+                              width: 60,
+                              fit: BoxFit.contain,
+                            )),
+                        Positioned(
+                          left: 34,
+                          top: 36,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.black,
+                              size: 25,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(
+                                  context); // Go back to the previous screen
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 32,
-                ),
-                Expanded(
-                    child: FutureBuilder(
-                  future: fetchVisaApplication(
-                      context.read<AuthProvider>().userInfo.email,
-                      context.read<AuthProvider>().userInfo.apiToken),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else {
-                      if (snapshot.data != null) {
-                        VisaApp visaApp = snapshot.data!;
-                        return VisaInfoCard(
-                          visaApp: visaApp,
-                        );
+                  SizedBox(
+                    height: 32,
+                  ),
+                  Expanded(
+                      child: FutureBuilder(
+                    future: fetchVisaApplication(
+                        context.read<AuthProvider>().userInfo.email,
+                        context.read<AuthProvider>().userInfo.apiToken),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
                       } else {
-                        return Text(
-                            'You do not have any active visa applications');
+                        if (snapshot.data != null) {
+                          VisaApp visaApp = snapshot.data!;
+                          return VisaInfoCard(
+                            visaApp: visaApp,
+                          );
+                        } else {
+                          return Text(
+                              'You do not have any active visa applications');
+                        }
                       }
-                    }
-                  },
-                ))
-              ]),
+                    },
+                  ))
+                ]),
+          ),
         ),
       ),
     );

@@ -52,97 +52,125 @@ class _MyQuotes2State extends State<MyQuotes2> {
 
     late Future<List<QuoteApp>> quotations;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: LayoutBuilder(builder: (context, constraints) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: SingleChildScrollView(
-            child: Column(children: [
-              Container(
-                height: 360,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Stack(
-                  alignment: Alignment.topLeft,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MapContainer(),
-                    Positioned(
-                      left: 38,
-                      bottom: 27,
-                      child: HeadingCard(),
-                    ),
-                    Positioned(
-                        bottom: -4,
-                        left: 53,
-                        child: Image.asset(
-                          'assets/images/DownArrowBlue.png',
-                          width: 63,
-                          fit: BoxFit.contain,
-                        )),
-                    Positioned(
-                      left: 34,
-                      top: 36,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                          size: 25,
+                    Column(
+                      children: [
+                        HeaderArea(),
+                        Container(
+                          //constraints: BoxConstraints.expand(),
+                          decoration: BoxDecoration(color: Colors.white),
+                          margin: EdgeInsets.only(top: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FutureBuilder(
+                                  future: fetchQuotationsByUserId(
+                                      context.read<AuthProvider>().userInfo.id,
+                                      context
+                                          .read<AuthProvider>()
+                                          .userInfo
+                                          .apiToken),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator(
+                                        color: Colors.cyan,
+                                      );
+                                    } else {
+                                      List<QuoteApp> quotationsList =
+                                          snapshot.data;
+                                      //var quotationsCardList = quotationsList.map((quotation)=>QuoteCard()).toList();
+                                      return Column(
+                                        children: List.generate(
+                                            quotationsList.length, (index) {
+                                          return Container(
+                                            margin: EdgeInsets.only(top: 16),
+                                            child: QuoteCard(
+                                                title: 'Quote ${index + 1}',
+                                                country: quotationsList[index]
+                                                    .country,
+                                                dateString: '14th June 2024',
+                                                quoteApp:
+                                                    quotationsList[index]),
+                                          );
+                                        }),
+                                      );
+                                    }
+                                  }),
+                            ],
+                          ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(
-                              context); // Go back to the previous screen
-                        },
-                      ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 99, top: 86),
+                      child: Footer(),
                     )
-                  ],
-                ),
-              ),
-              Container(
-                //constraints: BoxConstraints.expand(),
-                decoration: BoxDecoration(color: Colors.white),
-                margin: EdgeInsets.only(top: 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FutureBuilder(
-                        future: fetchQuotationsByUserId(
-                            context.read<AuthProvider>().userInfo.id,
-                            context.read<AuthProvider>().userInfo.apiToken),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator(
-                              color: Colors.cyan,
-                            );
-                          } else {
-                            List<QuoteApp> quotationsList = snapshot.data;
-                            //var quotationsCardList = quotationsList.map((quotation)=>QuoteCard()).toList();
-                            return Column(
-                              children:
-                                  List.generate(quotationsList.length, (index) {
-                                return Container(
-                                  margin: EdgeInsets.only(top: 16),
-                                  child: QuoteCard(
-                                      title: 'Quote ${index + 1}',
-                                      country: quotationsList[index].country,
-                                      dateString: '14th June 2024',
-                                      quoteApp: quotationsList[index]),
-                                );
-                              }),
-                            );
-                          }
-                        }),
-                  ],
-                ),
-              ),
-              Container(margin: EdgeInsets.only(top: 77), child: Footer())
-            ]),
+                  ]),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class HeaderArea extends StatelessWidget {
+  const HeaderArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 360,
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          MapContainer(),
+          Positioned(
+            left: 38,
+            bottom: 27,
+            child: HeadingCard(),
           ),
-        );
-      }),
+          Positioned(
+              bottom: 0,
+              left: 53,
+              child: Image.asset(
+                'assets/images/DownArrowBlue.png',
+                width: 60,
+                fit: BoxFit.contain,
+              )),
+          Positioned(
+            left: 34,
+            top: 36,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+                size: 25,
+              ),
+              onPressed: () {
+                Navigator.pop(context); // Go back to the previous screen
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -305,7 +333,7 @@ class QuoteCard extends StatelessWidget {
       child: Container(
         alignment: Alignment.topCenter,
         //width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: 34),
+        //padding: EdgeInsets.symmetric(horizontal: 34),
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
         decoration: BoxDecoration(
@@ -426,7 +454,11 @@ class MapContainer extends StatelessWidget {
     return Container(
       height: 294,
       decoration: BoxDecoration(
-          color: Colors.cyan,
+          gradient: LinearGradient(
+              colors: [Colors.cyan, Color(0xFF95DCF0)],
+              stops: [0, 0.8],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20))),

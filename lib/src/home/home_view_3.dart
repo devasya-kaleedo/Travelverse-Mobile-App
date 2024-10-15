@@ -14,153 +14,213 @@ class HomeView3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      drawer: CustomDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 40),
-              padding: EdgeInsets.symmetric(horizontal: 34),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        drawer: CustomDrawer(),
+        body: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            //physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Builder(builder: (context) {
-                    return GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: Image.asset(
-                        'assets/images/Hamburger.png',
-                        width: 25,
-                      ),
-                    );
-                  }),
-                  ProfileButton()
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ProfileHeader(),
+                      BannerArea(),
+                      NavArea(),
+                    ],
+                  ),
+                  Footer()
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Banner(),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              margin: EdgeInsets.only(top: 11),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.16),
-                          offset: Offset(5, 5),
-                          blurRadius: 30)
-                    ]),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    NavItem(
-                      lightTitle: 'My ',
-                      boldTitle: 'Quotes',
-                      description:
-                          'Instantly access all your travel quotes in one place, making it easy to stay organised and prepared for your next adventure.',
-                      navLink: '/my_quotes',
-                    ),
-                    NavDivider(),
-                    NavItem(
-                        lightTitle: 'Track ',
-                        boldTitle: 'My Visa',
-                        description:
-                            'Easily track the status of your visa application with real-time updates, and download it effortlessly so you can plan your travel ahead.',
-                        navLink: '/my_visa'),
-                    NavDivider(),
-                    NavItem(
-                        lightTitle: 'View ',
-                        boldTitle: 'My Itinerary',
-                        description:
-                            'Access your day- wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings and vouchers, all in one place.',
-                        navLink: '/view_my_itineraries')
-                  ],
+          );
+        }),
+        bottomNavigationBar: Container(
+          height: 60,
+          decoration: BoxDecoration(
+              color: Color(0xFF03C3DF),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          child: Center(
+              child: Text(
+            'Chat with us',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
+          )),
+        ),
+      ),
+    );
+  }
+}
+
+class Footer extends StatelessWidget {
+  const Footer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      margin: EdgeInsets.only(top: 32),
+      padding: EdgeInsets.only(left: 40),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          fit: StackFit.loose,
+          clipBehavior: Clip.none,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Need Help?',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600),
                 ),
-              ),
+                Text('We are available 24x7!',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500)),
+                Container(
+                    margin: EdgeInsets.only(top: 24), child: CallUsButton()),
+                SizedBox(
+                  height: 16,
+                )
+              ],
             ),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(top: 32),
-              padding: EdgeInsets.only(left: 40),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  fit: StackFit.loose,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Need Help?',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Text('We are available 24x7!',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500)),
-                        Container(
-                            margin: EdgeInsets.only(top: 24),
-                            child: CallUsButton()),
-                        SizedBox(
-                          height: 16,
-                        )
-                      ],
-                    ),
-                    Positioned(
-                      right: 0,
-                      child: Image.asset(
-                        'assets/images/DottedPlane.png',
-                        width: 135,
-                      ),
-                    )
-                  ],
-                ),
+            Positioned(
+              right: 0,
+              child: Image.asset(
+                'assets/images/DottedPlane.png',
+                width: 135,
               ),
             )
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 60,
+    );
+  }
+}
+
+class NavArea extends StatelessWidget {
+  const NavArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      margin: EdgeInsets.only(top: 11),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
-            color: Color(0xFF03C3DF),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        child: Center(
-            child: Text(
-          'Chat with us',
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Poppins',
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
-        )),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.16),
+                  offset: Offset(5, 5),
+                  blurRadius: 30)
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NavItem(
+              lightTitle: 'My ',
+              boldTitle: 'Quotes',
+              description:
+                  'Instantly access all your travel quotes in one place, making it easy to stay organised and prepared for your next adventure.',
+              navLink: '/my_quotes',
+            ),
+            NavDivider(),
+            NavItem(
+                lightTitle: 'Track ',
+                boldTitle: 'My Visa',
+                description:
+                    'Easily track the status of your visa application with real-time updates, and download it effortlessly so you can plan your travel ahead.',
+                navLink: '/my_visa'),
+            NavDivider(),
+            NavItem(
+                lightTitle: 'View ',
+                boldTitle: 'My Itinerary',
+                description:
+                    'Access your day- wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings and vouchers, all in one place.',
+                navLink: '/view_my_itineraries')
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BannerArea extends StatelessWidget {
+  const BannerArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Banner(),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 40),
+      padding: EdgeInsets.symmetric(horizontal: 34),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Builder(builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Image.asset(
+                  'assets/images/Hamburger.png',
+                  width: 25,
+                ),
+              ),
+            );
+          }),
+          ProfileButton()
+        ],
       ),
     );
   }

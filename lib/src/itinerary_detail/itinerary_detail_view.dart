@@ -86,48 +86,7 @@ class ItineraryDetail extends StatelessWidget {
           backgroundColor: Colors.cyan,
           body: Column(
             children: [
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [Color(0xFF03C3DF), Color(0xFFFEFEFE)],
-                        stops: [0, 0.95],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter)),
-                padding: EdgeInsets.only(left: 38, top: 47),
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      icon: Image.asset(
-                        'assets/images/BackIconVisa.png',
-                        width: 24,
-                        fit: BoxFit.contain,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(
-                            context); // Go back to the previous screen
-                      },
-                    ),
-                    SizedBox(
-                      height: 27,
-                    ),
-                    SizedBox(
-                      width: 155,
-                      child: Text(
-                        'Your Itinerary for Next Trip!',
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              HeaderArea(),
               Expanded(
                   child: Container(
                 decoration: BoxDecoration(
@@ -146,20 +105,33 @@ class ItineraryDetail extends StatelessWidget {
                         return Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.data != null) {
-                        return Center(
-                          child: Column(
-                              children: List.generate(
-                                  snapshot.data!.itineraryDays!.length,
-                                  (index) => ItineraryDay(
-                                        itineraryDetails: itineraryDetails,
-                                        dayData: snapshot
-                                            .data!.itineraryDays![index],
-                                        index: index + 1,
-                                      ))
-                              // children: [
-                              //   ItineraryDay(itineraryDetails: itineraryDetails)
-                              // ],
-                              ),
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ...List.generate(
+                                        snapshot.data!.itineraryDays!.length,
+                                        (index) => ItineraryDay(
+                                              itineraryDetails:
+                                                  itineraryDetails,
+                                              dayData: snapshot
+                                                  .data!.itineraryDays![index],
+                                              index: index + 1,
+                                            )),
+                                    IntrinsicHeight(
+                                        child: IntrinsicHeight(
+                                      child: VerticalDivider(),
+                                    ))
+                                  ]
+                                  // children: [
+                                  //   ItineraryDay(itineraryDetails: itineraryDetails)
+                                  // ],
+                                  ),
+                            ),
+                          ],
                         );
                       }
                       return Text('No data found');
@@ -276,6 +248,57 @@ class ItineraryDetail extends StatelessWidget {
 //       }),
 //     );
 //   }
+}
+
+class HeaderArea extends StatelessWidget {
+  const HeaderArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Color(0xFF03C3DF), Color(0xFFFEFEFE)],
+              stops: [0, 0.95],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter)),
+      padding: EdgeInsets.only(left: 38, top: 47),
+      alignment: Alignment.bottomLeft,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconButton(
+            icon: Image.asset(
+              'assets/images/BackIconVisa.png',
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            onPressed: () {
+              Navigator.pop(context); // Go back to the previous screen
+            },
+          ),
+          SizedBox(
+            height: 27,
+          ),
+          SizedBox(
+            width: 155,
+            child: Text(
+              'Your Itinerary for Next Trip!',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
 
 class ItineraryDay extends StatelessWidget {

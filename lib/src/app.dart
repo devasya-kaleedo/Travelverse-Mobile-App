@@ -18,6 +18,7 @@ import 'package:travelverse_mobile_app/src/my_visa/visa_view.dart';
 import 'package:travelverse_mobile_app/src/view_my_itineraries/view_my_itineraries.dart';
 import 'package:travelverse_mobile_app/src/vouchers/vouchers_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travelverse_mobile_app/src/vouchers/vouchers_view_2.dart';
 
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
@@ -147,7 +148,7 @@ class MyApp extends StatelessWidget {
                     case '/feedback':
                       return FeedbackView();
                     case '/vouchers':
-                      return VouchersView();
+                      return VouchersView2();
                     case '/inclusions_exclusions':
                       return InclusionsExclusionsView();
                     case '/home':

@@ -131,7 +131,9 @@ class ItineraryApp {
           ),
         );
       case 'transportation.transportations':
-        List<String> detailsList = dayItem['additionalDetails'].split('\n');
+        List<String> detailsList = dayItem['additionalDetails'] != null
+            ? dayItem['additionalDetails']!.split('\n')
+            : [];
         return Padding(
           padding: const EdgeInsets.only(left: 55),
           child: Column(

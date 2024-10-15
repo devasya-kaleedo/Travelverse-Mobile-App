@@ -43,152 +43,332 @@ Future<ItineraryApp?> fetchItinerary(userId, apiToken) async {
 class InclusionsExclusionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.cyan,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.cyan,
-                    padding: EdgeInsets.only(top: 60, left: 30),
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(
-                                  context); // Go back to the previous screen
-                            },
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xFF03C3DF),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      HeaderArea(),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 32, top: 32),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30))),
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              FutureBuilder(
+                                  future: fetchItinerary(
+                                      context.read<AuthProvider>().userInfo.id,
+                                      context
+                                          .read<AuthProvider>()
+                                          .userInfo
+                                          .apiToken),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting)
+                                      return Center(
+                                        child: SizedBox(
+                                            height: 32,
+                                            width: 32,
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    ItineraryApp itineraryApp = snapshot.data!;
+                                    List<String> inclusions = itineraryApp
+                                        .inclusions!['details']
+                                        .split('\n');
+                                    List<String> exclusions = itineraryApp
+                                        .exclusions!['details']
+                                        .split('\n');
+                                    return Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Inclusions',
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.black,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            ...List.generate(
+                                                inclusions.length,
+                                                (index) => Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 8),
+                                                      padding: EdgeInsets.only(
+                                                          right: 32),
+                                                      child: RichText(
+                                                          textAlign:
+                                                              TextAlign.justify,
+                                                          text: TextSpan(
+                                                              children: [
+                                                                WidgetSpan(
+                                                                    child: //       direction: Axis.horizontal,
+                                                                        Icon(
+                                                                            Icons
+                                                                                .adjust,
+                                                                            size:
+                                                                                15)),
+                                                                TextSpan(
+                                                                    text: ' '),
+                                                                TextSpan(
+                                                                    text: inclusions[
+                                                                        index],
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Poppins',
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400))
+                                                              ])),
+                                                    )
+                                                // Wrap(
+                                                //       direction: Axis.horizontal,
+                                                //       children: [
+                                                //         Icon(Icons.adjust,
+                                                //             size: 15),
+                                                //         Text(inclusions[index],
+                                                //             style: TextStyle(
+                                                //                 fontFamily:
+                                                //                     'Poppins',
+                                                //                 color:
+                                                //                     Colors.black,
+                                                //                 fontSize: 14,
+                                                //                 fontWeight:
+                                                //                     FontWeight
+                                                //                         .w400)),
+                                                //       ],
+                                                //     )
+                                                ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
+                                            Text(
+                                              'Exclusions',
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.black,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            ...List.generate(
+                                                exclusions.length,
+                                                (index) => Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 8),
+                                                      padding: EdgeInsets.only(
+                                                          right: 32),
+                                                      child: RichText(
+                                                          textAlign:
+                                                              TextAlign.justify,
+                                                          text: TextSpan(
+                                                              children: [
+                                                                WidgetSpan(
+                                                                    child: //       direction: Axis.horizontal,
+                                                                        Icon(
+                                                                            Icons
+                                                                                .adjust,
+                                                                            size:
+                                                                                15)),
+                                                                TextSpan(
+                                                                    text: ' '),
+                                                                TextSpan(
+                                                                    text: inclusions[
+                                                                        index],
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Poppins',
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400))
+                                                              ])),
+                                                    ))
+                                          ],
+                                        ));
+                                  }),
+                            ],
                           ),
-                          SizedBox(height: 30),
-                          SizedBox(
-                            width: 115,
-                            child: Text(
-                              'Inclusions & Exclusions',
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                        ),
+                      )
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.only(
+                      //           topLeft: Radius.circular(30),
+                      //           topRight: Radius.circular(30))),
+                      //   padding: EdgeInsets.symmetric(horizontal: 44, vertical: 22),
+                      //   child:
+                      // FutureBuilder(
+                      //       future: fetchItinerary(
+                      //           context.read<AuthProvider>().userInfo.id,
+                      //           context.read<AuthProvider>().userInfo.apiToken),
+                      //       builder: (context, snapshot) {
+                      //         if (snapshot.connectionState ==
+                      //             ConnectionState.waiting)
+                      //           return Center(
+                      //             child: SizedBox(
+                      //                 height: 32,
+                      //                 width: 32,
+                      //                 child: CircularProgressIndicator()),
+                      //           );
+                      //         ItineraryApp itineraryApp = snapshot.data!;
+                      //         List<String> inclusions =
+                      //             itineraryApp.inclusions!['details'].split('\n');
+                      //         List<String> exclusions =
+                      //             itineraryApp.exclusions!['details'].split('\n');
+                      //         return Align(
+                      //             alignment: Alignment.topLeft,
+                      //             child: Column(
+                      //               crossAxisAlignment: CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Text(
+                      //                   'Inclusions',
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Poppins',
+                      //                       color: Colors.black,
+                      //                       fontSize: 24,
+                      //                       fontWeight: FontWeight.w600),
+                      //                 ),
+                      //                 SizedBox(
+                      //                   height: 8,
+                      //                 ),
+                      //                 ...List.generate(
+                      //                     inclusions.length,
+                      //                     (index) => Row(
+                      //                           children: [
+                      //                             Icon(Icons.adjust, size: 15),
+                      //                             SizedBox(
+                      //                               width: 10,
+                      //                             ),
+                      //                             Text(inclusions[index],
+                      //                                 style: TextStyle(
+                      //                                     fontFamily: 'Poppins',
+                      //                                     color: Colors.black,
+                      //                                     fontSize: 14,
+                      //                                     fontWeight:
+                      //                                         FontWeight.w400)),
+                      //                           ],
+                      //                         )),
+                      //                 SizedBox(
+                      //                   height: 16,
+                      //                 ),
+                      //                 Text(
+                      //                   'Exclusions',
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Poppins',
+                      //                       color: Colors.black,
+                      //                       fontSize: 24,
+                      //                       fontWeight: FontWeight.w600),
+                      //                 ),
+                      //                 SizedBox(
+                      //                   height: 8,
+                      //                 ),
+                      //                 ...List.generate(
+                      //                     exclusions.length,
+                      //                     (index) => Row(
+                      //                           children: [
+                      //                             Icon(Icons.adjust, size: 15),
+                      //                             SizedBox(
+                      //                               width: 10,
+                      //                             ),
+                      //                             Text(exclusions[index],
+                      //                                 style: TextStyle(
+                      //                                     color: Colors.black,
+                      //                                     fontFamily: 'Poppins',
+                      //                                     fontSize: 14,
+                      //                                     fontWeight:
+                      //                                         FontWeight.w400)),
+                      //                           ],
+                      //                         ))
+                      //               ],
+                      //             ));
+                      //       }),
+                      // )
+                    ],
                   ),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30))),
-                    padding: EdgeInsets.symmetric(horizontal: 44, vertical: 22),
-                    child: FutureBuilder(
-                        future: fetchItinerary(
-                            context.read<AuthProvider>().userInfo.id,
-                            context.read<AuthProvider>().userInfo.apiToken),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting)
-                            return Center(
-                              child: SizedBox(
-                                  height: 32,
-                                  width: 32,
-                                  child: CircularProgressIndicator()),
-                            );
-                          ItineraryApp itineraryApp = snapshot.data!;
-                          List<String> inclusions =
-                              itineraryApp.inclusions!['details'].split('\n');
-                          List<String> exclusions =
-                              itineraryApp.exclusions!['details'].split('\n');
-                          return Align(
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Inclusions',
-                                    style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        color: Colors.black,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  ...List.generate(
-                                      inclusions.length,
-                                      (index) => Row(
-                                            children: [
-                                              Icon(Icons.adjust, size: 15),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(inclusions[index],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400)),
-                                            ],
-                                          )),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text(
-                                    'Exclusions',
-                                    style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        color: Colors.black,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  ...List.generate(
-                                      exclusions.length,
-                                      (index) => Row(
-                                            children: [
-                                              Icon(Icons.adjust, size: 15),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(exclusions[index],
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400)),
-                                            ],
-                                          ))
-                                ],
-                              ));
-                        }),
-                  ),
-                )
-              ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class HeaderArea extends StatelessWidget {
+  const HeaderArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Color(0xFF03C3DF), Color(0xFFFEFEFE)],
+              stops: [0, 0.95],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter)),
+      padding: EdgeInsets.only(left: 38, top: 47),
+      alignment: Alignment.bottomLeft,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconButton(
+            icon: Image.asset(
+              'assets/images/BackIconVisa.png',
+              width: 24,
+              fit: BoxFit.contain,
             ),
-          );
-        },
+            onPressed: () {
+              Navigator.pop(context); // Go back to the previous screen
+            },
+          ),
+          SizedBox(
+            height: 27,
+          ),
+          SizedBox(
+            width: 155,
+            child: Text(
+              'Inclusions & Exclusions',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
+            ),
+          )
+        ],
       ),
     );
   }
