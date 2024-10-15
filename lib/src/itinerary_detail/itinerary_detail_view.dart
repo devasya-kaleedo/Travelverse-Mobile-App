@@ -81,37 +81,41 @@ class ItineraryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF03C3DF),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              child: Wrap(
-                direction: Axis.vertical,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 47, left: 38),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 24,
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: Colors.cyan,
+          body: Column(
+            children: [
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Color(0xFF03C3DF), Color(0xFFFEFEFE)],
+                        stops: [0, 0.95],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter)),
+                padding: EdgeInsets.only(left: 38, top: 47),
+                alignment: Alignment.bottomLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/images/BackIconVisa.png',
+                        width: 24,
+                        fit: BoxFit.contain,
                       ),
                       onPressed: () {
                         Navigator.pop(
                             context); // Go back to the previous screen
                       },
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 38, bottom: 24, top: 27),
-                    constraints: BoxConstraints(minWidth: 100, maxWidth: 155),
-                    //decoration: BoxDecoration(color: Colors.red),
-                    child: Align(
-                      alignment: Alignment(-1, 0),
+                    SizedBox(
+                      height: 27,
+                    ),
+                    SizedBox(
+                      width: 155,
                       child: Text(
                         'Your Itinerary for Next Trip!',
                         style: TextStyle(
@@ -120,32 +124,30 @@ class ItineraryDetail extends StatelessWidget {
                             fontSize: 18,
                             fontWeight: FontWeight.w500),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
+              Expanded(
+                  child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30))),
-                child: Center(
+                padding: EdgeInsets.symmetric(horizontal: 44),
+                child: SingleChildScrollView(
                   child: FutureBuilder(
-                      future: fetchItinerary(
-                          context.read<AuthProvider>().userInfo.id,
-                          context.read<AuthProvider>().userInfo.apiToken),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator(
-                            color: Colors.cyan,
-                          );
-                        }
-                        if (snapshot.data != null) {
-                          return Column(
+                    future: fetchItinerary(
+                        context.read<AuthProvider>().userInfo.id,
+                        context.read<AuthProvider>().userInfo.apiToken),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.data != null) {
+                        return Center(
+                          child: Column(
                               children: List.generate(
                                   snapshot.data!.itineraryDays!.length,
                                   (index) => ItineraryDay(
@@ -157,16 +159,123 @@ class ItineraryDetail extends StatelessWidget {
                               // children: [
                               //   ItineraryDay(itineraryDetails: itineraryDetails)
                               // ],
-                              );
-                        }
-                        return Text('no data');
-                      }),
-                ))
-          ],
-        ),
-      ),
+                              ),
+                        );
+                      }
+                      return Text('No data found');
+                    },
+                  ),
+                ),
+              ))
+            ],
+          )),
     );
   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Color(0xFF03C3DF),
+//       body: LayoutBuilder(builder: (context, constraints) {
+//         return ConstrainedBox(
+//           constraints: BoxConstraints(minHeight: constraints.maxHeight),
+//           child: SingleChildScrollView(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 Container(
+//                   child: Wrap(
+//                     direction: Axis.vertical,
+//                     children: [
+//                       Padding(
+//                         padding: const EdgeInsets.only(top: 47, left: 38),
+//                         child: IconButton(
+//                           icon: Icon(
+//                             Icons.arrow_back,
+//                             color: Colors.black,
+//                             size: 24,
+//                           ),
+//                           onPressed: () {
+//                             Navigator.pop(
+//                                 context); // Go back to the previous screen
+//                           },
+//                         ),
+//                       ),
+//                       Container(
+//                         margin: EdgeInsets.only(left: 38, bottom: 24, top: 27),
+//                         constraints:
+//                             BoxConstraints(minWidth: 100, maxWidth: 155),
+//                         //decoration: BoxDecoration(color: Colors.red),
+//                         child: Align(
+//                           alignment: Alignment(-1, 0),
+//                           child: Text(
+//                             'Your Itinerary for Next Trip!',
+//                             style: TextStyle(
+//                                 fontFamily: 'Poppins',
+//                                 color: Colors.white,
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.w500),
+//                           ),
+//                         ),
+//                       )
+//                     ],
+//                   ),
+//                 ),
+//                 Expanded(
+//                   child: Container(
+//                       padding: const EdgeInsets.symmetric(horizontal: 40),
+//                       decoration: BoxDecoration(
+//                           color: Colors.white,
+//                           borderRadius: BorderRadius.only(
+//                               topLeft: Radius.circular(30),
+//                               topRight: Radius.circular(30))),
+//                       child: FutureBuilder(
+//                           future: Future.delayed(Duration(seconds: 5)),
+//                           // fetchItinerary(
+//                           //     context.read<AuthProvider>().userInfo.id,
+//                           //     context.read<AuthProvider>().userInfo.apiToken),
+//                           builder: (context, snapshot) {
+//                             if (snapshot.connectionState ==
+//                                 ConnectionState.waiting) {
+//                               return Center(
+//                                 child: Column(
+//                                   children: [
+//                                     CircularProgressIndicator(
+//                                       color: Colors.cyan,
+//                                     ),
+//                                   ],
+//                                 ),
+//                               );
+//                             }
+//                             if (snapshot.data != null) {
+//                               return Center(
+//                                 child: Column(
+//                                     children: List.generate(
+//                                         snapshot.data!.itineraryDays!.length,
+//                                         (index) => ItineraryDay(
+//                                               itineraryDetails:
+//                                                   itineraryDetails,
+//                                               dayData: snapshot
+//                                                   .data!.itineraryDays![index],
+//                                               index: index + 1,
+//                                             ))
+//                                     // children: [
+//                                     //   ItineraryDay(itineraryDetails: itineraryDetails)
+//                                     // ],
+//                                     ),
+//                               );
+//                             }
+//                             return Center(child: Text('no data'));
+//                           })),
+//                 )
+//               ],
+//             ),
+//           ),
+//         );
+//       }),
+//     );
+//   }
 }
 
 class ItineraryDay extends StatelessWidget {
@@ -258,6 +367,25 @@ class ItineraryItem extends StatelessWidget {
   final String actionLabel;
   final List<String>? details;
   final Map<String, dynamic> dayItem;
+
+  String getIcon() {
+    switch (dayItem['__component']) {
+      case 'flight.flight':
+        return 'assets/images/PlaneIcon.png';
+      case 'transportation.transportations':
+        return 'assets/images/CarIcon.png';
+      case 'stay.stay':
+        return 'assets/images/BedIcon.png';
+      case 'activities.activities':
+        if (dayItem['category'] == 'Food') return 'assets/images/DineIcon.png';
+        if (dayItem['category'] == 'Explore')
+          return 'assets/images/CompassIcon.png';
+      default:
+        return 'assets/images/CompassIcon.png';
+    }
+    return 'assets/images/CompassIcon.png';
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -269,7 +397,7 @@ class ItineraryItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(9.0),
           child: Image(
-            image: icon,
+            image: AssetImage(getIcon()),
             width: 17,
             fit: BoxFit.contain,
           ),
