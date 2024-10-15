@@ -70,11 +70,11 @@ class VisaView extends StatelessWidget {
                         child: HeadingCard(),
                       ),
                       Positioned(
-                          bottom: -4,
+                          bottom: 0,
                           left: 53,
                           child: Image.asset(
                             'assets/images/DownArrowBlue.png',
-                            width: 63,
+                            width: 60,
                             fit: BoxFit.contain,
                           )),
                       Positioned(
@@ -150,80 +150,134 @@ class VisaInfoCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(left: 24, top: 22, bottom: 27),
+                      width: double.infinity,
+                      padding: EdgeInsets.only(top: 22, bottom: 27),
                       decoration: BoxDecoration(
-                          color: Color(0xFF03C3DF),
+                          gradient: LinearGradient(
+                              colors: [Colors.cyan, Color(0xFF95DCF0)],
+                              stops: [0, 0.8],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight),
                           borderRadius: BorderRadius.circular(20)),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Wrap(
-                              direction: Axis.vertical,
-                              children: [
-                                Text(
-                                  'Reference No.',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        fit: StackFit.loose,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 24),
+                                child: Wrap(
+                                  direction: Axis.vertical,
+                                  children: [
+                                    Text(
+                                      'Reference No.',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Poppins',
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      visaApp.visaReference!,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
                                 ),
-                                Text(
-                                  visaApp.visaReference!,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500),
-                                )
-                              ],
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10, left: 16),
+                                child: IntrinsicHeight(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      VerticalDivider(
+                                        color: Colors.white,
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            //margin: EdgeInsets.only(top: 16.5),
+                                            child: Wrap(
+                                                direction: Axis.vertical,
+                                                children: [
+                                                  Text(
+                                                    'Date Applied',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF177689),
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  Text(
+                                                    visaApp.applicationDate ??
+                                                        '',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF177689),
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 8,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  )
+                                                ]),
+                                          ),
+                                          Container(
+                                            //margin: EdgeInsets.only(top: 8.5),
+                                            child: Wrap(
+                                                direction: Axis.vertical,
+                                                children: [
+                                                  Text(
+                                                    'Estimated Date of Decision',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF177689),
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  Text(
+                                                    visaApp.expectedDate ?? '',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF177689),
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 8,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  )
+                                                ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Positioned(
+                            right: 10,
+                            bottom: -30,
+                            child: Image.asset(
+                              'assets/images/AeroplaneWhite.png',
+                              width: 100,
+                              fit: BoxFit.contain,
                             ),
-                            Container(
-                              margin: EdgeInsets.only(top: 16.5),
-                              child: Wrap(direction: Axis.vertical, children: [
-                                Text(
-                                  'Date Applied',
-                                  style: TextStyle(
-                                      color: Color(0xFF177689),
-                                      fontFamily: 'Poppins',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  visaApp.applicationDate ?? '',
-                                  style: TextStyle(
-                                      color: Color(0xFF177689),
-                                      fontFamily: 'Poppins',
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.w500),
-                                )
-                              ]),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 8.5),
-                              child: Wrap(direction: Axis.vertical, children: [
-                                Text(
-                                  'Estimated Date of Decision',
-                                  style: TextStyle(
-                                      color: Color(0xFF177689),
-                                      fontFamily: 'Poppins',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  visaApp.expectedDate ?? '',
-                                  style: TextStyle(
-                                      color: Color(0xFF177689),
-                                      fontFamily: 'Poppins',
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.w500),
-                                )
-                              ]),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ),
                     Container(
@@ -311,7 +365,7 @@ class VisaInfoCard extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/images/DownArrowBlue.png',
-                        width: 16,
+                        width: 15,
                         fit: BoxFit.contain,
                       ),
                       Text(

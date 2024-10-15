@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     final currHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Colors.cyan,
       resizeToAvoidBottomInset: false,
       body: Container(
         height: MediaQuery.sizeOf(context).height,
@@ -33,8 +34,8 @@ class LoginView extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10))),
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20))),
                   padding: EdgeInsets.only(left: 64, top: 32, right: 64),
                   child: Container(
                     alignment: Alignment.topLeft,

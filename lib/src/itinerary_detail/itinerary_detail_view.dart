@@ -81,8 +81,6 @@ class ItineraryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currHeight = MediaQuery.of(context).size.height;
-    final currWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xFF03C3DF),
       body: SingleChildScrollView(

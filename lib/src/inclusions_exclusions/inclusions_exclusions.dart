@@ -44,6 +44,7 @@ class InclusionsExclusionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.cyan,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return ConstrainedBox(
@@ -91,7 +92,11 @@ class InclusionsExclusionsView extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Container(
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30))),
                     padding: EdgeInsets.symmetric(horizontal: 44, vertical: 22),
                     child: FutureBuilder(
                         future: fetchItinerary(

@@ -151,7 +151,7 @@ class ViewMyItineraries extends StatelessWidget {
                         lightTitle: 'My ',
                         boldTitle: 'Itinerary',
                         description:
-                            'View your day- wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings  and vouchers, all in one place.',
+                            'View your day-wise itinerary with detailed information on your hotels, driver details, cruise, sightseeings  and vouchers, all in one place.',
                         navLink: '/itinerary_detail'),
                     NavDivider(),
                     NavItem(
@@ -168,30 +168,47 @@ class ViewMyItineraries extends StatelessWidget {
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(top: 32),
               padding: EdgeInsets.only(left: 40),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Need Help?',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text('We are available 24x7!',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500)),
-                  Container(
-                      margin: EdgeInsets.only(top: 24), child: CallUsButton()),
-                  SizedBox(
-                    height: 16,
-                  )
-                ],
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  fit: StackFit.loose,
+                  clipBehavior: Clip.none,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Need Help?',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text('We are available 24x7!',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500)),
+                        Container(
+                            margin: EdgeInsets.only(top: 24),
+                            child: CallUsButton()),
+                        SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: Image.asset(
+                        'assets/images/DottedPlane.png',
+                        width: 135,
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],
@@ -286,14 +303,28 @@ class TripStatusCard extends StatelessWidget {
             offset: Offset(5, 5),
             blurRadius: 15)
       ], color: Color(0xFF03C3DF), borderRadius: BorderRadius.circular(10)),
-      child: Text(
-        'You are on Trip',
-        style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Poppins',
-            fontSize: 31,
-            fontWeight: FontWeight.w600),
-        textAlign: TextAlign.right,
+      child: Stack(
+        //fit: StackFit.loose,
+        children: [
+          Text(
+            'You are on Trip',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontSize: 31,
+                fontWeight: FontWeight.w600),
+            textAlign: TextAlign.right,
+          ),
+          Positioned(
+            bottom: 0,
+            left: -10,
+            child: Image.asset(
+              'assets/images/AeroplaneWhite.png',
+              width: 70,
+              fit: BoxFit.contain,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -342,7 +373,10 @@ class PlaceCard extends StatelessWidget {
             child: Align(
                 alignment: Alignment.topRight,
                 child: Text('${getStartString()} - ${getEndString()}',
-                    style: TextStyle(color: Colors.white))),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500))),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 14, bottom: 14),
@@ -350,7 +384,11 @@ class PlaceCard extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   itineraryApp.country!,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500),
                 )),
           )
         ],
@@ -414,7 +452,7 @@ class NavItem extends StatelessWidget {
                           color: Color(0xFF9D9D9D),
                           fontSize: 10,
                           fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600)),
+                          fontWeight: FontWeight.w500)),
                 ),
                 Flexible(
                   child: Image.asset(

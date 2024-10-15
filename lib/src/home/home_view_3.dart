@@ -38,25 +38,7 @@ class HomeView3 extends StatelessWidget {
                       ),
                     );
                   }),
-                  GestureDetector(
-                    onTap: () {
-                      context.read<AuthProvider>().logout();
-                    },
-                    child: Wrap(
-                      direction: Axis.vertical,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/ProfileIcon.png',
-                          width: 25,
-                        ),
-                        Text(
-                          context.read<AuthProvider>().userInfo.first_name,
-                          style: TextStyle(color: Color(0xFF03C3DF)),
-                        )
-                      ],
-                    ),
-                  )
+                  ProfileButton()
                 ],
               ),
             ),
@@ -115,33 +97,50 @@ class HomeView3 extends StatelessWidget {
               ),
             ),
             Container(
-              alignment: Alignment.topLeft,
+              alignment: Alignment.center,
               margin: EdgeInsets.only(top: 32),
               padding: EdgeInsets.only(left: 40),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Need Help?',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text('We are available 24x7!',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500)),
-                  Container(
-                      margin: EdgeInsets.only(top: 24), child: CallUsButton()),
-                  SizedBox(
-                    height: 16,
-                  )
-                ],
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  fit: StackFit.loose,
+                  clipBehavior: Clip.none,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Need Help?',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text('We are available 24x7!',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500)),
+                        Container(
+                            margin: EdgeInsets.only(top: 24),
+                            child: CallUsButton()),
+                        SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: Image.asset(
+                        'assets/images/DottedPlane.png',
+                        width: 135,
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],
@@ -164,6 +163,68 @@ class HomeView3 extends StatelessWidget {
         )),
       ),
     );
+  }
+}
+
+class ProfileButton extends StatefulWidget {
+  const ProfileButton({
+    super.key,
+  });
+
+  @override
+  State<ProfileButton> createState() => _ProfileButtonState();
+}
+
+class _ProfileButtonState extends State<ProfileButton> {
+  @override
+  Widget build(BuildContext context) {
+    return MenuAnchor(
+        style: MenuStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.white)),
+        builder:
+            (BuildContext context, MenuController controller, Widget? child) {
+          return IconButton(
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/ProfileIcon.png',
+                  width: 30,
+                  fit: BoxFit.contain,
+                ),
+                Text(
+                  'Devasya',
+                  style: TextStyle(
+                      color: Colors.cyan,
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+            tooltip: 'Show menu',
+          );
+        },
+        menuChildren: [
+          MenuItemButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            onPressed: () => context.read<AuthProvider>().logout(),
+            child: Text('SignOut',
+                style: TextStyle(
+                    color: Colors.cyan,
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500)),
+          ),
+        ]);
   }
 }
 

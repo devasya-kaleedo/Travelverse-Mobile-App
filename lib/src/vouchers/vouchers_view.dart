@@ -112,7 +112,7 @@ class VouchersView extends StatelessWidget {
                 Positioned(
                   top: -245,
                   left: 113,
-                  child: Image.asset('assets/images/Gift.png',
+                  child: Image.asset('assets/images/Complimentary.png',
                       width: 163, fit: BoxFit.contain),
                 ),
                 Positioned(
