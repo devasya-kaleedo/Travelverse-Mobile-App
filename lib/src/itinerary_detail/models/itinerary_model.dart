@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:travelverse_mobile_app/src/my_quotes/my_quotes_2.dart';
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 import 'package:travelverse_mobile_app/src/utils/datetime.dart';
 
 class ItineraryApp {
@@ -104,28 +106,81 @@ class ItineraryApp {
                     direction: Axis.vertical,
                     crossAxisAlignment: WrapCrossAlignment.start,
                     children: [
-                      Text('From'),
-                      Text(dayItem['departure']),
-                      Text(formatDateTime(dayItem['departureTime']))
+                      Text('From',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f))),
+                      Text(dayItem['departure']!,
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f))),
+                      Text(formatDateTime(dayItem['departureTime'] ?? ''),
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f)))
                     ],
                   ),
                   Wrap(
                     direction: Axis.vertical,
                     children: [
-                      Text('To'),
-                      Text(dayItem['arrival']),
-                      Text(formatDateTime(dayItem['arrivalTime']))
+                      Text(
+                        'To',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6f6f6f)),
+                      ),
+                      Text(dayItem['arrival'],
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f))),
+                      Text(formatDateTime(dayItem['arrivalTime']),
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f)))
                     ],
                   )
                 ],
               ),
-              ActionButton(
-                  title: 'Download', iconAsset: 'assets/images/PDFIcon.png'),
+              if (dayItem['file']?['data']?['attributes'] != null)
+                ActionButton(
+                    callback: () {
+                      openFile(dayItem['file']['data']['attributes']['url'],
+                          dayItem['file']['data']['attributes']['name']);
+                    },
+                    title: 'Download',
+                    iconAsset: 'assets/images/PDFIcon.png'),
               if (dayItem['meals'] != null)
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                      'MEALS: ${dayItem['meals']!} ${dayItem['mealsPreference']!}'),
+                      'MEALS: ${dayItem['meals']!} ${dayItem['mealsPreference']!}',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF6f6f6f))),
+                ),
+              if (dayItem['additional_text'] != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('${dayItem['additional_text']!}',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF6f6f6f))),
                 ),
             ],
           ),
@@ -145,16 +200,56 @@ class ItineraryApp {
                   Wrap(
                     direction: Axis.vertical,
                     crossAxisAlignment: WrapCrossAlignment.start,
-                    children: [Text('From'), Text(dayItem['departure'])],
+                    children: [
+                      Text('From',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f))),
+                      Text(dayItem['departure'],
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f)))
+                    ],
                   ),
                   Wrap(
                     direction: Axis.vertical,
-                    children: [Text('To'), Text(dayItem['arrival'])],
+                    children: [
+                      Text('To',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f))),
+                      Text(dayItem['arrival'],
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6f6f6f)))
+                    ],
                   ),
                 ],
               ),
-              ActionButton(
-                  title: 'Contact', iconAsset: 'assets/images/PhoneIcon.png'),
+              if (dayItem['contactDetailsPhone'] != null &&
+                  dayItem['contactDetailsPhone'] != '')
+                ActionButton(
+                    callback: () {
+                      launchCaller('tel:${dayItem['contactDetailsPhone']}');
+                    },
+                    title: 'Contact',
+                    iconAsset: 'assets/images/PhoneIcon.png'),
+              if (dayItem['file']?['data']?['attributes'] != null)
+                ActionButton(
+                    callback: () {
+                      openFile(dayItem['file']['data']['attributes']['url'],
+                          dayItem['file']['data']['attributes']['name']);
+                    },
+                    title: 'Download',
+                    iconAsset: 'assets/images/PDFIcon.png'),
               Wrap(direction: Axis.vertical, children: [
                 SizedBox(
                   height: 12,
@@ -166,29 +261,117 @@ class ItineraryApp {
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF6f6f6f))))
-                    .toList()
+                    .toList(),
+                if (dayItem['additional_text'] != null)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('${dayItem['additional_text']!}',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6f6f6f))),
+                  ),
               ])
             ],
           ),
         );
       case 'stay.stay':
-        return ActionButton(
-          title: 'Get Directions',
-          iconAsset: 'assets/images/BedIcon.png',
+        return Column(
+          children: [
+            if (dayItem['address'] != null && dayItem['address'] != '')
+              ActionButton(
+                callback: () {
+                  launchMap(dayItem['address']);
+                },
+                title: 'Get Directions',
+                iconAsset: 'assets/images/BedIcon.png',
+              ),
+            if (dayItem['file']?['data']?['attributes'] != null)
+              ActionButton(
+                  callback: () {
+                    openFile(dayItem['file']['data']['attributes']['url'],
+                        dayItem['file']['data']['attributes']['name']);
+                  },
+                  title: 'Download',
+                  iconAsset: 'assets/images/PDFIcon.png'),
+            if (dayItem['additionalDetails'] != null)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('${dayItem['additionalDetails']!}',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF6f6f6f))),
+              ),
+          ],
         );
 
       case 'activities.activities':
         switch (dayItem['category']) {
           case 'Food':
-            return ActionButton(
-              title: 'Get Directions',
-              iconAsset: 'assets/images/DineIcon.png',
+            return Column(
+              children: [
+                if (dayItem['address'] != null && dayItem['address'] != '')
+                  ActionButton(
+                    callback: () {
+                      launchMap(dayItem['address']);
+                    },
+                    title: 'Get Directions',
+                    iconAsset: 'assets/images/CompassIcon.png',
+                  ),
+                if (dayItem['file']?['data']?['attributes'] != null)
+                  ActionButton(
+                      callback: () {
+                        openFile(dayItem['file']['data']['attributes']['url'],
+                            dayItem['file']['data']['attributes']['name']);
+                      },
+                      title: 'Download',
+                      iconAsset: 'assets/images/PDFIcon.png'),
+                if (dayItem['description'] != null)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('${dayItem['description']!}',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6f6f6f))),
+                  ),
+              ],
             );
           case 'Explore':
           default:
-            return ActionButton(
-              title: 'Get Directions',
-              iconAsset: 'assets/images/CompassIcon.png',
+            return Column(
+              children: [
+                if (dayItem['address'] != null && dayItem['address'] != '')
+                  ActionButton(
+                    callback: () {
+                      launchMap(dayItem['address']);
+                    },
+                    title: 'Get Directions',
+                    iconAsset: 'assets/images/CompassIcon.png',
+                  ),
+                if (dayItem['file']?['data']?['attributes'] != null)
+                  ActionButton(
+                      callback: () {
+                        openFile(dayItem['file']['data']['attributes']['url'],
+                            dayItem['file']['data']['attributes']['name']);
+                      },
+                      title: 'Download',
+                      iconAsset: 'assets/images/PDFIcon.png'),
+                if (dayItem['description'] != null)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('${dayItem['description']!}',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6f6f6f))),
+                  ),
+              ],
             );
         }
       default:
@@ -293,13 +476,20 @@ class SampleItem extends StatelessWidget {
 }
 
 class ActionButton extends StatelessWidget {
-  const ActionButton({super.key, required this.title, required this.iconAsset});
+  const ActionButton(
+      {super.key,
+      required this.title,
+      required this.iconAsset,
+      required this.callback});
   final String title;
   final String iconAsset;
+  final VoidCallback callback;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        callback();
+      },
       style: ElevatedButton.styleFrom(
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(right: 70, left: 12),

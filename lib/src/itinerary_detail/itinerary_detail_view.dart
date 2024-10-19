@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
 import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
 import 'package:intl/intl.dart';
+import 'package:travelverse_mobile_app/src/utils/datetime.dart';
 
 class ItineraryDetail extends StatelessWidget {
   ItineraryDetail({super.key});
@@ -56,7 +57,9 @@ class ItineraryDetail extends StatelessWidget {
       Map<String, dynamic> queryParams = <String, dynamic>{};
 
       queryParams['filters[user][id][\$eq]'] = userId.toString();
-      queryParams['populate[itinerary_days][populate][day_items]'] = '*';
+      queryParams[
+              'populate[itinerary_days][populate][day_items][populate][file]'] =
+          '*';
       Response response = await get(
           Uri.https('dev.strapi.travelverse.in', 'api/itenary-managements',
               queryParams),
@@ -409,6 +412,16 @@ class ItineraryItem extends StatelessWidget {
     return 'assets/images/CompassIcon.png';
   }
 
+  String getTime() {
+    switch (dayItem['__component']) {
+      case 'flight.flight':
+      case 'transportation.transportations':
+        return toTime(dayItem['departureTime']);
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -432,7 +445,7 @@ class ItineraryItem extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: Colors.black)),
-      subtitle: Text(time,
+      subtitle: Text(getTime(),
           style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 12,

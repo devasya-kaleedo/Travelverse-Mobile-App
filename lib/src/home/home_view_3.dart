@@ -261,7 +261,7 @@ class _ProfileButtonState extends State<ProfileButton> {
                   fit: BoxFit.contain,
                 ),
                 Text(
-                  'Devasya',
+                  context.read<AuthProvider>().userInfo.first_name,
                   style: TextStyle(
                       color: Colors.cyan,
                       fontFamily: 'Poppins',

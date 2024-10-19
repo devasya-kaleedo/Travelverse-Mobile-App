@@ -11,8 +11,7 @@ class QuoteApp {
     quoteFile['id'] = quoteRes['id'];
     quoteFile['name'] = quoteRes['attributes']['name'];
     quoteFile['ext'] = quoteRes['attributes']['ext'];
-    quoteFile['url'] =
-        'https://dev.strapi.travelverse.in${quoteRes['attributes']['url']}';
+    quoteFile['url'] = quoteRes['attributes']['url'];
     return QuoteApp(data['id'], data['attributes']['country'], quoteFile);
   }
 }

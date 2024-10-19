@@ -5,3 +5,9 @@ String formatDateTime(String dateTimeString) {
       DateTime.parse(dateTimeString).toLocal(); // Convert to local time
   return DateFormat('d MMM hh:mm a').format(dateTime);
 }
+
+String toTime(String dateTimeString) {
+  DateTime dateTime =
+      DateTime.parse(dateTimeString).toLocal(); // Convert to local time
+  return DateFormat('hh:mm a').format(dateTime);
+}

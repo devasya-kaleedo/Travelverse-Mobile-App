@@ -44,127 +44,162 @@ class CustomDrawer extends StatelessWidget {
     return SafeArea(
       child: Drawer(
           backgroundColor: Colors.white,
-          child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-            child: SingleChildScrollView(
+          surfaceTintColor: Colors.transparent,
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints:
+                  BoxConstraints(minHeight: MediaQuery.of(context).size.height),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 169,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10)),
-                      gradient: LinearGradient(
-                          colors: [
-                            Colors.cyan,
-                            Colors.white,
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter),
-                    ),
-                    child: Center(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Positioned(
-                              bottom: -15,
-                              left: 25,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 32,
-                                child: Text(
-                                  initials,
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 24,
-                                      color: Color(0xFFA5A5A5),
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              )),
-                          Positioned(
-                            right: 8,
-                            top: 30,
-                            child: Image.asset(
-                              'assets/images/MarkersIcon.png',
-                              width: 80,
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                  Column(
+                    children: [
+                      HeaderArea(initials: initials),
+                      NavArea(navItemsList: navItemsList),
+                    ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 33),
-                    decoration: const BoxDecoration(color: Colors.white),
-                    child: Center(
-                      child: Column(
-                        //mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ...List.generate(
-                              navItemsList.length,
-                              (index) => NavEntry(
-                                    navItemData: navItemsList[index],
-                                  )),
-                          GestureDetector(
-                            onTap: () {
-                              context.read<AuthProvider>().logout();
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(top: 30),
-                              child: Wrap(
-                                children: [
-                                  Wrap(
-                                    direction: Axis.horizontal,
-                                    spacing: 8,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/NavLogout.png',
-                                        width: 15,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      Text(
-                                        'Logout',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily: 'Poppins',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      )
-                                    ],
-                                  ),
-                                  Divider(
-                                      color:
-                                          Color(0xFF707070).withOpacity(0.21))
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: const BoxDecoration(color: Colors.white),
-                    height: 215,
-                    child: Center(
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            'assets/images/BaseTextLogo.png',
-                            fit: BoxFit.contain,
-                            width: 150,
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                  FooterArea(),
                 ],
               ),
             ),
           )),
+    );
+  }
+}
+
+class FooterArea extends StatelessWidget {
+  const FooterArea({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      decoration: const BoxDecoration(color: Colors.white),
+      child: Center(
+        child: Image.asset(
+          'assets/images/BaseTextLogo.png',
+          fit: BoxFit.contain,
+          width: 150,
+        ),
+      ),
+    );
+  }
+}
+
+class NavArea extends StatelessWidget {
+  const NavArea({
+    super.key,
+    required this.navItemsList,
+  });
+
+  final List<Map<String, String>> navItemsList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 33),
+      decoration: const BoxDecoration(color: Colors.white),
+      child: Center(
+        child: Column(
+          //mainAxisSize: MainAxisSize.min,
+          children: [
+            ...List.generate(
+                navItemsList.length,
+                (index) => NavEntry(
+                      navItemData: navItemsList[index],
+                    )),
+            GestureDetector(
+              onTap: () {
+                context.read<AuthProvider>().logout();
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 30),
+                child: Wrap(
+                  children: [
+                    Wrap(
+                      direction: Axis.horizontal,
+                      spacing: 8,
+                      children: [
+                        Image.asset(
+                          'assets/images/NavLogout.png',
+                          width: 15,
+                          fit: BoxFit.contain,
+                        ),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Poppins',
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                    Divider(color: Color(0xFF707070).withOpacity(0.21))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HeaderArea extends StatelessWidget {
+  const HeaderArea({
+    super.key,
+    required this.initials,
+  });
+
+  final String initials;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 169,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+        gradient: LinearGradient(colors: [
+          Colors.cyan,
+          Colors.white,
+        ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
+      ),
+      child: Center(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned(
+                bottom: -15,
+                left: 25,
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 32,
+                  child: Text(
+                    initials,
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 24,
+                        color: Color(0xFFA5A5A5),
+                        fontWeight: FontWeight.w500),
+                  ),
+                )),
+            Positioned(
+              right: 8,
+              top: 30,
+              child: Image.asset(
+                'assets/images/MarkersIcon.png',
+                width: 80,
+                fit: BoxFit.contain,
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

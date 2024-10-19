@@ -6,7 +6,7 @@ class VisaApp {
   String? generatedFrom;
   int? pax;
   String? country;
-  int? quote;
+  String? quote;
   String? visaReference;
   String? status;
   String? email;
