@@ -9,14 +9,19 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/constants.dart';
 import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
 import 'package:travelverse_mobile_app/src/login/login_form.dart';
+import 'package:travelverse_mobile_app/src/my_quotes/my_quotes_2.dart';
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 
 Future<ItineraryApp?> fetchItinerary(userId, apiToken) async {
   try {
     Map<String, dynamic> queryParams = <String, dynamic>{};
 
     queryParams['filters[user][id][\$eq]'] = userId.toString();
+    queryParams['populate[voucher_doc]'] = '*';
+
     Response response = await get(
         Uri.https('dev.strapi.travelverse.in', 'api/itenary-managements',
             queryParams),
@@ -120,9 +125,9 @@ class VouchersView2 extends StatelessWidget {
                                 else {
                                   ItineraryApp? itineraryApp = snapshot.data;
                                   return MainContent(
-                                    items:
-                                        itineraryApp?.discounts_complimentaries,
-                                  );
+                                      items: itineraryApp
+                                          ?.discounts_complimentaries,
+                                      doc: itineraryApp?.voucher_doc);
                                 }
                               }),
                         ),
@@ -153,10 +158,10 @@ class VouchersView2 extends StatelessWidget {
 }
 
 class MainContent extends StatelessWidget {
-  const MainContent({super.key, this.items});
+  const MainContent({super.key, this.items, this.doc});
 
   final String? items;
-
+  final Map<String, dynamic>? doc;
   @override
   Widget build(BuildContext context) {
     List<String> itemList = List.empty();
@@ -183,11 +188,25 @@ class MainContent extends StatelessWidget {
             (index) => ItemView(
                   title: itemList[index],
                 )),
+        if (doc?['data']?['attributes']?['url'] != null)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            width: 200,
+            child: ActionButton(
+                title: 'Download',
+                iconAsset: 'assets/images/DownArrow.png',
+                callback: () {
+                  openFile(doc?['data']?['attributes']?['url'],
+                      doc?['data']?['attributes']?['name']);
+                }),
+          ),
         SizedBox(
           height: 80,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            launchCaller('tel:${CALL_SUPPORT_NUMBER}');
+          },
           child: Text(
             'Need Help?',
             style: TextStyle(

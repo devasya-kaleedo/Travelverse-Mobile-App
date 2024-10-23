@@ -8,10 +8,12 @@ import 'package:http/http.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/constants.dart';
 import 'package:travelverse_mobile_app/src/my_quotes/quote_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 
 class MyQuotes2 extends StatefulWidget {
   @override
@@ -285,7 +287,9 @@ class Footer extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            launchCaller('tel:${CALL_SUPPORT_NUMBER}');
+          },
           child: Text(
             'Need Help?',
             style: TextStyle(
@@ -320,8 +324,8 @@ class QuoteCard extends StatelessWidget {
   final QuoteApp quoteApp;
 
   Future openQuote() async {
-    await openFile(quoteApp.quote['url'],
-        '${quoteApp.quote['name']}${quoteApp.quote['ext']}');
+    await openFile(quoteApp.quote?['data']['attributes']['url'],
+        '${quoteApp.quote?['data']['attributes']['name']}${quoteApp.quote?['data']['attributes']['ext']}');
   }
 
   @override

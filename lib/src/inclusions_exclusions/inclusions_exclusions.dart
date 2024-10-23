@@ -122,10 +122,11 @@ class InclusionsExclusionsView extends StatelessWidget {
                                                                 WidgetSpan(
                                                                     child: //       direction: Axis.horizontal,
                                                                         Icon(
-                                                                            Icons
-                                                                                .adjust,
-                                                                            size:
-                                                                                15)),
+                                                                  Icons.adjust,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                )),
                                                                 TextSpan(
                                                                     text: ' '),
                                                                 TextSpan(
@@ -190,14 +191,15 @@ class InclusionsExclusionsView extends StatelessWidget {
                                                                 WidgetSpan(
                                                                     child: //       direction: Axis.horizontal,
                                                                         Icon(
-                                                                            Icons
-                                                                                .adjust,
-                                                                            size:
-                                                                                15)),
+                                                                  Icons.adjust,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                )),
                                                                 TextSpan(
                                                                     text: ' '),
                                                                 TextSpan(
-                                                                    text: inclusions[
+                                                                    text: exclusions[
                                                                         index],
                                                                     style: TextStyle(
                                                                         fontFamily:

@@ -8,6 +8,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
 import 'package:travelverse_mobile_app/src/common/drawer.dart';
+import 'package:travelverse_mobile_app/src/constants.dart';
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 
 class HomeView3 extends StatelessWidget {
   HomeView3({super.key});
@@ -41,7 +43,7 @@ class HomeView3 extends StatelessWidget {
           );
         }),
         bottomNavigationBar: Container(
-          height: 60,
+          height: 50,
           decoration: BoxDecoration(
               color: Color(0xFF03C3DF),
               borderRadius: BorderRadius.only(
@@ -296,7 +298,9 @@ class CallUsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          launchCaller('tel:${CALL_SUPPORT_NUMBER}');
+        },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF03C3DF),
             padding: EdgeInsets.all(0),

@@ -19,6 +19,8 @@ class ItineraryApp {
   List<Map<String, dynamic>>? itineraryDays;
   Map<String, dynamic>? inclusions;
   Map<String, dynamic>? exclusions;
+  Map<String, dynamic>? image;
+  Map<String, dynamic>? voucher_doc;
 
   ItineraryApp(
       {this.startDate,
@@ -33,7 +35,9 @@ class ItineraryApp {
       this.publishedAt,
       this.discounts_complimentaries,
       this.inclusions,
-      this.exclusions});
+      this.exclusions,
+      this.image,
+      this.voucher_doc});
 
   ItineraryApp.fromJson(Map<String, dynamic> json) {
     startDate = json['start_date'];
@@ -49,6 +53,8 @@ class ItineraryApp {
     discounts_complimentaries = json['discounts_complimentaries'];
     inclusions = json['inclusions'];
     exclusions = json['exclusions'];
+    image = json['image'];
+    voucher_doc = json['voucher_doc'];
     //itineraryDays = json['itinerary_days'];
   }
 
@@ -67,6 +73,8 @@ class ItineraryApp {
     data['discounts_complimentaries'] = this.discounts_complimentaries;
     data['inclusions'] = this.inclusions;
     data['exclusions'] = this.exclusions;
+    data['image'] = this.image;
+    data['voucher_doc'] = this.voucher_doc;
     //data['itinerary_days'] = this.itineraryDays;
     return data;
   }
@@ -118,7 +126,10 @@ class ItineraryApp {
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: Color(0xFF6f6f6f))),
-                      Text(formatDateTime(dayItem['departureTime'] ?? ''),
+                      Text(
+                          dayItem['departureTime'] != null
+                              ? formatDateTime(dayItem['departureTime'])
+                              : '',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 12,
@@ -143,7 +154,10 @@ class ItineraryApp {
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: Color(0xFF6f6f6f))),
-                      Text(formatDateTime(dayItem['arrivalTime']),
+                      Text(
+                          dayItem['arrivalTime'] != null
+                              ? formatDateTime(dayItem['arrivalTime'])
+                              : '',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 12,
@@ -277,35 +291,60 @@ class ItineraryApp {
           ),
         );
       case 'stay.stay':
-        return Column(
-          children: [
-            if (dayItem['address'] != null && dayItem['address'] != '')
-              ActionButton(
-                callback: () {
-                  launchMap(dayItem['address']);
-                },
-                title: 'Get Directions',
-                iconAsset: 'assets/images/BedIcon.png',
-              ),
-            if (dayItem['file']?['data']?['attributes'] != null)
-              ActionButton(
-                  callback: () {
-                    openFile(dayItem['file']['data']['attributes']['url'],
-                        dayItem['file']['data']['attributes']['name']);
-                  },
-                  title: 'Download',
-                  iconAsset: 'assets/images/PDFIcon.png'),
-            if (dayItem['additionalDetails'] != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('${dayItem['additionalDetails']!}',
+        return Padding(
+          padding: EdgeInsets.only(left: 55),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (dayItem['name'] != null && dayItem['name'] != '')
+                Text('${dayItem['name']!}',
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF6f6f6f))),
-              ),
-          ],
+              if (dayItem['category'] != null && dayItem['category'] != '')
+                Text('${dayItem['category']!}',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF6f6f6f))),
+              if (dayItem['breakfast'] != null && dayItem['breakfast'] != '')
+                Text('Breakfast : ${dayItem['breakfast']!}',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF6f6f6f))),
+              if (dayItem['address'] != null && dayItem['address'] != '')
+                ActionButton(
+                  callback: () {
+                    launchMap(dayItem['address']);
+                  },
+                  title: 'Get Directions',
+                  iconAsset: 'assets/images/BedIcon.png',
+                ),
+              if (dayItem['file']?['data']?['attributes'] != null)
+                ActionButton(
+                    callback: () {
+                      openFile(dayItem['file']['data']['attributes']['url'],
+                          dayItem['file']['data']['attributes']['name']);
+                    },
+                    title: 'Download',
+                    iconAsset: 'assets/images/PDFIcon.png'),
+              if (dayItem['additionalDetails'] != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('${dayItem['additionalDetails']!}',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF6f6f6f))),
+                ),
+            ],
+          ),
         );
 
       case 'activities.activities':

@@ -8,10 +8,12 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
 import 'package:travelverse_mobile_app/src/common/drawer.dart';
+import 'package:travelverse_mobile_app/src/constants.dart';
 import 'package:travelverse_mobile_app/src/itinerary_detail/models/itinerary_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 
 class ViewMyItineraries extends StatelessWidget {
   ViewMyItineraries({super.key});
@@ -21,7 +23,7 @@ class ViewMyItineraries extends StatelessWidget {
       Map<String, dynamic> queryParams = <String, dynamic>{};
 
       queryParams['filters[user][id][\$eq]'] = userId.toString();
-
+      queryParams['populate[image]'] = '*';
       Response response = await get(
           Uri.https('dev.strapi.travelverse.in', 'api/itenary-managements',
               queryParams),
@@ -289,7 +291,9 @@ class CallUsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          launchCaller('tel:${CALL_SUPPORT_NUMBER}');
+        },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF03C3DF),
             padding: EdgeInsets.all(0),
@@ -367,7 +371,7 @@ class TripStatusCard extends StatelessWidget {
             left: -10,
             child: Image.asset(
               'assets/images/AeroplaneWhite.png',
-              width: 70,
+              width: MediaQuery.of(context).size.width * 0.18,
               fit: BoxFit.contain,
             ),
           )
@@ -398,6 +402,13 @@ class PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider imageProvider;
+    if (itineraryApp.image?['data']?['attributes']?['url'] != null) {
+      imageProvider =
+          NetworkImage(itineraryApp.image?['data']?['attributes']?['url']);
+    } else {
+      imageProvider = AssetImage('assets/images/Switzerland.png');
+    }
     return Container(
       height: 225,
       constraints: BoxConstraints(maxHeight: 225),
@@ -409,9 +420,7 @@ class PlaceCard extends StatelessWidget {
                 blurRadius: 15)
           ],
           borderRadius: BorderRadius.circular(10),
-          image: DecorationImage(
-              image: AssetImage('assets/images/Switzerland.png'),
-              fit: BoxFit.cover)),
+          image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

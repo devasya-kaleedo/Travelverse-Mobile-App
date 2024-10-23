@@ -416,7 +416,9 @@ class ItineraryItem extends StatelessWidget {
     switch (dayItem['__component']) {
       case 'flight.flight':
       case 'transportation.transportations':
-        return toTime(dayItem['departureTime']);
+        return dayItem['departureTime'] != null
+            ? toTime(dayItem['departureTime'])
+            : '';
       default:
         return '';
     }
@@ -439,7 +441,7 @@ class ItineraryItem extends StatelessWidget {
           ),
         ),
       ),
-      title: Text(dayItem['title'],
+      title: Text(dayItem['title'] ?? '',
           style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,

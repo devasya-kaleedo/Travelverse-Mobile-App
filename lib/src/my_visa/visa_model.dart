@@ -14,7 +14,7 @@ class VisaApp {
   String? updatedAt;
   String? applicationDate;
   String? expectedDate;
-  Document? document;
+  Map<String, dynamic>? file;
 
   VisaApp(
       {this.firstName,
@@ -30,7 +30,8 @@ class VisaApp {
       this.createdAt,
       this.updatedAt,
       this.applicationDate,
-      this.expectedDate});
+      this.expectedDate,
+      this.file});
 
   VisaApp.fromJson(Map<String, dynamic> json) {
     firstName = json['first_name'];
@@ -47,6 +48,7 @@ class VisaApp {
     updatedAt = json['updatedAt'];
     applicationDate = json['application_date'];
     expectedDate = json['expected_date'];
+    file = json['file'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,6 +67,7 @@ class VisaApp {
     data['updatedAt'] = this.updatedAt;
     data['application_date'] = this.applicationDate;
     data['expected_date'] = this.expectedDate;
+    data['file'] = this.file;
     return data;
   }
 
@@ -72,8 +75,6 @@ class VisaApp {
     var attributes = data['attributes'];
     VisaApp visaApp = VisaApp.fromJson(attributes);
     visaApp.id = data['id'];
-    Document doc = Document.fromJson(attributes['document']);
-    visaApp.document = doc;
     return visaApp;
   }
 }

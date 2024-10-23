@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
+import 'package:travelverse_mobile_app/src/my_quotes/my_quotes_2.dart';
 import 'package:travelverse_mobile_app/src/my_visa/visa_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -356,33 +357,39 @@ class VisaInfoCard extends StatelessWidget {
                   ],
                 ),
               )),
-          if (visaApp.status! == 'Completed')
-            Container(
-              margin: EdgeInsets.only(top: 38),
-              color: Colors.white,
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/DownArrowBlue.png',
-                        width: 15,
-                        fit: BoxFit.contain,
-                      ),
-                      Text(
-                        'Download Now',
-                        style: TextStyle(
-                            color: Colors.cyan,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.cyan,
-                            decorationThickness: 4,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 10),
-                      ),
-                    ],
-                  )),
+          if (visaApp.file?['data']?['attributes']?['url'] != null)
+            GestureDetector(
+              onTap: () {
+                openFile(visaApp.file?['data']?['attributes']?['url'],
+                    visaApp.file?['data']?['attributes']?['name']);
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 38),
+                color: Colors.white,
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/DownArrowBlue.png',
+                          width: 20,
+                          fit: BoxFit.contain,
+                        ),
+                        Text(
+                          'Download Now',
+                          style: TextStyle(
+                              color: Colors.cyan,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.cyan,
+                              decorationThickness: 4,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12),
+                        ),
+                      ],
+                    )),
+              ),
             )
         ],
       ),

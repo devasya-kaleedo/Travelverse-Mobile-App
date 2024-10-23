@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelverse_mobile_app/src/auth/auth_provider.dart';
 import 'package:travelverse_mobile_app/src/auth/user_model.dart';
+import 'package:travelverse_mobile_app/src/constants.dart';
+import 'package:travelverse_mobile_app/src/utils/call.dart';
 import 'package:travelverse_mobile_app/src/utils/toasts.dart';
 
 // Define a custom Form widget.
@@ -252,7 +254,9 @@ class CallUsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          launchCaller('tel:${CALL_SUPPORT_NUMBER}');
+        },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF03C3DF),
             padding: EdgeInsets.all(0),
